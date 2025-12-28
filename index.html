@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Gestión de Convivencia Escolar 2.6</title>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="theme-switcher">
+        <button id="themeToggle" title="Cambiar Tema">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Contenedor para notificaciones de alarmas -->
+    <div id="alarmNotificationsContainer"></div>
+
+    <div class="container">
+        <header class="main-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="toggleSidebar" class="icon-btn"><i class="fas fa-bars"></i></button>
+                    <div class="logo">
+                        <div class="logo-icon"><i class="fas fa-school"></i></div>
+                        <div class="logo-text">
+                            <h1>Convivencia Escolar</h1>
+                            <p>Gestión & Planificación</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="btn-primary" id="addActivity">
+                        <i class="fas fa-plus"></i> <span class="btn-text">Nueva Actividad</span>
+                    </button>
+                    <div class="date-display">
+                        <i class="fas fa-calendar-day"></i>
+                        <span id="currentDate">Cargando...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-wrapper">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-section nav-menu">
+                        <button class="nav-item active" data-view="dashboard">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </button>
+                        <button class="nav-item" data-view="calendar">
+                            <i class="fas fa-calendar-alt"></i> Calendario
+                        </button>
+                        <button class="nav-item" data-view="gantt">
+                            <i class="fas fa-stream"></i> Carta Gantt
+                        </button>
+                        <button class="nav-item" data-view="list">
+                            <i class="fas fa-list-ul"></i> Lista General
+                        </button>
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-filter"></i> Filtrar por Tipo</h3>
+                        <div class="filter-chips">
+                            <div class="filter-chip active" data-filter="all">Todo</div>
+                            <div class="filter-chip" data-filter="actividad" style="border-color: #4CAF50; color: #4CAF50;">Actividades</div>
+                            <div class="filter-chip" data-filter="reunion" style="border-color: #2196F3; color: #2196F3;">Reuniones</div>
+                            <div class="filter-chip" data-filter="efemeride" style="border-color: #FF9800; color: #FF9800;">Efemérides</div>
+                            <div class="filter-chip" data-filter="recordatorio" style="border-color: #9C27B0; color: #9C27B0;">Recordatorios</div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="mini-nav">
+                            <button class="nav-btn-mini" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                            <span id="currentMonth">Mes Actual</span>
+                            <button class="nav-btn-mini" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <button class="btn-primary full-width" id="today">Ir a Hoy</button>
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+
+                    <!-- NUEVA SECCIÓN DE CONFIGURACIÓN DE ALARMAS -->
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-bell"></i> Configurar Alarmas</h3>
+                        <div style="margin-bottom: 10px;">
+                            <button class="alarm-toggle-btn" id="toggleAllAlarms">
+                                <i class="fas fa-bell"></i> 
+                                <span class="btn-text">Activar Todas las Alarmas</span>
+                            </button>
+                        </div>
+                        <div class="alarm-options" id="alarmOptions">
+                            <div class="alarm-option" data-minutes="5">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">5 min</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="15">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">15 min</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="30">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">30 min</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="60">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">1 hora</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="1440">
+                                <div class="alarm-option-icon">📅</div>
+                                <div class="alarm-option-label">1 día</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="0">
+                                <div class="alarm-option-icon">🔕</div>
+                                <div class="alarm-option-label">Ninguna</div>
+                            </div>
+                        </div>
+                        <small style="display: block; margin-top: 5px; font-size: 0.7rem; color: #94a3b8; text-align: center;">
+                            Alarma por defecto para nuevas actividades
+                        </small>
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+
+                    <div class="sidebar-section footer-actions">
+                        <div class="email-actions">
+                            <button class="btn-primary full-width" id="btnEmail" disabled>
+                                <i class="fas fa-envelope"></i> Enviar (<span id="selectedCount">0</span>)
+                            </button>
+                        </div>
+
+                        <button class="btn-secondary" id="generateReport">
+                            <i class="fas fa-print"></i> Imprimir Reporte
+                        </button>
+                        
+                        <!-- BOTÓN PARA ELIMINAR DUPLICADOS -->
+                        <button class="clean-duplicates-btn tooltip" id="cleanDuplicates" title="Eliminar actividades duplicadas">
+                            <i class="fas fa-broom"></i> <span class="btn-text">Limpiar Duplicados</span>
+                            <span class="tooltiptext">Elimina actividades con el mismo título, fecha y tipo</span>
+                        </button>
+                        
+                        <div class="data-tools">
+                            <button class="tool-btn" id="backupData" title="Guardar Manual">
+                                <i class="fas fa-save"></i>
+                            </button>
+                            <button class="tool-btn" id="exportData" title="Exportar JSON">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="tool-btn" id="importDataBtn" title="Importar JSON">
+                                <i class="fas fa-upload"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- NUEVA SECCIÓN DE SINCRONIZACIÓN -->
+                        <div class="sidebar-divider"></div>
+                        <div class="sync-section" style="margin-top: 10px;">
+                            <h3 style="font-size: 0.75rem; color: #64748b; margin-bottom: 10px; text-transform: uppercase;">
+                                <i class="fas fa-sync-alt"></i> Sincronización entre Equipos
+                            </h3>
+                            
+                            <button class="tool-btn" id="exportSync" title="Exportar para otro equipo" style="width: 100%; margin-bottom: 5px;">
+                                <i class="fas fa-file-export"></i> <span class="btn-text">Exportar Archivo Sync</span>
+                            </button>
+                            
+                            <button class="tool-btn" id="importSyncBtn" title="Importar desde otro equipo" style="width: 100%;">
+                                <i class="fas fa-file-import"></i> <span class="btn-text">Importar Archivo Sync</span>
+                            </button>
+                            
+                            <small style="display: block; margin-top: 5px; font-size: 0.7rem; color: #94a3b8; text-align: center;">
+                                Para usar en otro equipo
+                            </small>
+                        </div>
+                        
+                        <small class="save-status">Guardado: <span id="lastSave">--:--</span></small>
+                        <small class="save-status" id="duplicateCount">Duplicados: <span id="duplicateNumber">0</span></small>
+                        <small class="save-status" id="alarmStatus">Alarmas activas: <span id="alarmCount">0</span></small>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div id="dashboardView" class="view-container active">
+                    <div class="dashboard-grid">
+                        <div class="summary-cards">
+                            <div class="card summary-card gradient-1">
+                                <div class="card-icon"><i class="fas fa-users"></i></div>
+                                <div class="card-data">
+                                    <span class="big-number" id="dashTotalActivities">0</span>
+                                    <span class="label">Actividades Totales</span>
+                                </div>
+                            </div>
+                            <div class="card summary-card gradient-2">
+                                <div class="card-icon"><i class="fas fa-clock"></i></div>
+                                <div class="card-data">
+                                    <span class="big-number" id="dashPending">0</span>
+                                    <span class="label">Pendientes este Mes</span>
+                                </div>
+                            </div>
+                            <div class="card summary-card gradient-3">
+                                <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="card-data">
+                                    <span class="big-number" id="dashHighPriority">0</span>
+                                    <span class="label">Prioridad Alta</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-row">
+                            <div class="card chart-card">
+                                <h3>Distribución por Tipo</h3>
+                                <div class="simple-bar-chart" id="typeDistribution"></div>
+                            </div>
+                            <div class="card upcoming-card">
+                                <h3><i class="fas fa-calendar-week"></i> Próximos 7 Días</h3>
+                                <div class="upcoming-list" id="upcomingList"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="calendarView" class="view-container">
+                    <div class="calendar-header">
+                        <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                </div>
+
+                <div id="ganttView" class="view-container">
+                    <div class="gantt-controls">
+                        <span class="info-tag"><i class="fas fa-info-circle"></i> Visualizando mes actual</span>
+                        <div class="gantt-scroll-info">
+                            <i class="fas fa-arrows-alt-h"></i> Usa la barra de scroll horizontal para ver todos los días
+                        </div>
+                    </div>
+                    <div class="gantt-scroll-container" id="ganttScrollContainer">
+                        <div class="gantt-wrapper">
+                            <div class="gantt-header">
+                                <div class="gantt-title-col">Actividad</div>
+                                <div class="gantt-timeline-col">
+                                    <div class="timeline-days"></div>
+                                </div>
+                            </div>
+                            <div id="ganttContent" class="gantt-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA LISTA CON SCROLL INDEPENDIENTE -->
+                <div id="listView" class="view-container">
+                    <div class="list-view-container">
+                        <div class="list-toolbar">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchInput" placeholder="Buscar por título o descripción...">
+                            </div>
+                            <select id="sortSelect" class="sort-select">
+                                <option value="date">📅 Fecha</option>
+                                <option value="priority">⚡ Prioridad</option>
+                                <option value="type">🏷️ Tipo</option>
+                            </select>
+                            <!-- Botón de limpiar duplicados en la vista lista -->
+                            <button class="clean-duplicates-btn" id="cleanDuplicatesList" style="margin-left: auto;">
+                                <i class="fas fa-broom"></i> Limpiar Duplicados
+                            </button>
+                        </div>
+                        
+                        <div class="list-content-wrapper">
+                            <div class="list-instructions">
+                                <i class="fas fa-check-square"></i> Selecciona las casillas para enviar por correo.
+                                <span id="alarmHint" style="color: #f59e0b; margin-left: 10px;">
+                                    <i class="fas fa-bell"></i> Los eventos con alarma se marcan con un indicador naranja
+                                </span>
+                            </div>
+                            <div id="activitiesList" class="activities-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL PARA ACTIVIDADES -->
+    <div id="activityModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nueva Actividad</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            
+            <form id="activityForm" class="modal-form">
+                <input type="hidden" id="activityId">
+                
+                <div class="form-grid">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <div class="type-selector-compact">
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="actividad" checked>
+                                    <span class="radio-btn"><i class="fas fa-users"></i> Actividad</span>
+                                </label>
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="reunion">
+                                    <span class="radio-btn"><i class="fas fa-handshake"></i> Reunión</span>
+                                </label>
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="efemeride">
+                                    <span class="radio-btn"><i class="fas fa-star"></i> Efeméride</span>
+                                </label>
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="recordatorio">
+                                    <span class="radio-btn"><i class="fas fa-bell"></i> Recordatorio</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" id="activityTitle" placeholder="Nombre de la actividad" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Prioridad</label>
+                            <select id="activityPriority">
+                                <option value="low">🟢 Baja</option>
+                                <option value="medium" selected>🟡 Media</option>
+                                <option value="high">🔴 Alta</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-col">
+                        <div class="form-row-dates">
+                            <div class="form-group">
+                                <label>Inicio</label>
+                                <input type="date" id="activityDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Hora</label>
+                                <input type="time" id="activityTime">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Fin (Opcional)</label>
+                            <input type="date" id="activityEndDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <div class="color-picker-simple">
+                                <input type="color" id="activityColor" value="#4CAF50">
+                                <span class="color-label">Seleccionar color</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NUEVA SECCIÓN PARA CONFIGURAR ALARMA -->
+                <div class="form-group full-width" id="alarmSettings">
+                    <label><i class="fas fa-bell"></i> Configurar Alarma</label>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <button type="button" class="alarm-toggle-btn" id="toggleAlarm">
+                            <i class="fas fa-bell-slash"></i> 
+                            <span>Alarma desactivada</span>
+                        </button>
+                        <select id="alarmTime" style="flex: 1;" disabled>
+                            <option value="5">5 minutos antes</option>
+                            <option value="15">15 minutos antes</option>
+                            <option value="30">30 minutos antes</option>
+                            <option value="60">1 hora antes</option>
+                            <option value="1440">1 día antes</option>
+                            <option value="0" selected>En el momento del evento</option>
+                        </select>
+                    </div>
+                    <small style="display: block; margin-top: 5px; color: var(--text-light);">
+                        La alarma te notificará antes del inicio del evento.
+                    </small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Descripción</label>
+                    <textarea id="activityDescription" rows="3" placeholder="Detalles adicionales..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-text" id="deleteActivity" style="color: #F44336; display: none;">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                     <button type="button" class="btn-text" id="duplicateActivity" style="color: #2196F3; display: none;">
+                        <i class="fas fa-copy"></i> Clonar
+                    </button>
+                    <div class="right-actions">
+                        <button type="button" class="btn-secondary modal-close">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIONES -->
+    <div id="notification" class="notification"><i class="fas fa-info-circle"></i> <span id="notificationText"></span></div>
+    
+    <!-- Tooltip para vista previa en Gantt (se crea dinámicamente) -->
+    <div id="ganttTooltip" class="gantt-tooltip"></div>
+    
+    <!-- INPUTS OCULTOS PARA IMPORTAR ARCHIVOS -->
+    <input type="file" id="fileImport" accept=".json" style="display: none;">
+    <input type="file" id="syncFileImport" accept=".json" style="display: none;">
+
+    <!-- BOTONES FLOTANTES -->
+    <a href="https://wa.me/56965388022?text=Hola,%20necesito%20ayuda%20con%20la%20convivencia%20escolar." class="whatsapp-btn" target="_blank" title="Enviar mensaje por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Botón para probar sonido de alarma -->
+    <div class="alarm-sound-btn" id="testAlarmSound" title="Probar sonido de alarma">
+        <i class="fas fa-volume-up"></i>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
