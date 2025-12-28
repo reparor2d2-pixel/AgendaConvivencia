@@ -1,0 +1,845 @@
+{
+  "activities": [
+    {
+      "id": "2",
+      "title": "Consejo de Profesores",
+      "type": "reunion",
+      "date": "2025-12-29",
+      "priority": "medium",
+      "color": "#2196F3",
+      "description": "Reunión mensual del consejo"
+    },
+    {
+      "id": "176645492223642687",
+      "title": "Jornada de Convivencia Escolar",
+      "type": "actividad",
+      "date": "2025-12-21",
+      "priority": "high",
+      "color": "#4CAF50",
+      "description": "Actividad de integración para todos los cursos"
+    },
+    {
+      "id": "176645492223670083",
+      "title": "Consejo de Profesores",
+      "type": "reunion",
+      "date": "2025-12-28",
+      "priority": "medium",
+      "color": "#2196F3",
+      "description": "Reunión mensual del consejo"
+    },
+    {
+      "id": "176645492223665209",
+      "title": "Día de la inclusión social y la no discriminación",
+      "type": "efemeride",
+      "date": "2026-03-01",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Día para promover la inclusión social y eliminar toda forma de discriminación"
+    },
+    {
+      "id": "176645492223644094",
+      "title": "Día internacional de la mujer",
+      "type": "efemeride",
+      "date": "2026-03-08",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Conmemoración de la lucha por la igualdad de género y los derechos de las mujeres"
+    },
+    {
+      "id": "176645492223621621",
+      "title": "Día contra el ciberacoso",
+      "type": "efemeride",
+      "date": "2026-03-14",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Concienciación sobre el ciberacoso y promoción de un uso seguro de internet"
+    },
+    {
+      "id": "176645492223685564",
+      "title": "Día internacional de la eliminación de la discriminación racial",
+      "type": "efemeride",
+      "date": "2026-03-21",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Lucha contra todas las formas de discriminación racial"
+    },
+    {
+      "id": "176645492223667312",
+      "title": "Día de concienciación sobre el autismo",
+      "type": "efemeride",
+      "date": "2026-04-02",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Concienciación y comprensión sobre el trastorno del espectro autista"
+    },
+    {
+      "id": "176645492223605630",
+      "title": "Día de la actividad física",
+      "type": "efemeride",
+      "date": "2026-04-06",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Promoción de la actividad física y hábitos de vida saludable"
+    },
+    {
+      "id": "176645492223615141",
+      "title": "Día de la educación rural",
+      "type": "efemeride",
+      "date": "2026-04-07",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a la educación en contextos rurales"
+    },
+    {
+      "id": "176645492223697698",
+      "title": "Semana de la matemática",
+      "type": "actividad",
+      "date": "2026-04-06",
+      "endDate": "2026-04-10",
+      "priority": "medium",
+      "color": "#4CAF50",
+      "description": "Semana dedicada a promover el interés por las matemáticas"
+    },
+    {
+      "id": "176645492223608062",
+      "title": "Día de la tierra",
+      "type": "efemeride",
+      "date": "2026-04-22",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Concienciación sobre la protección del medio ambiente"
+    },
+    {
+      "id": "176645492223621962",
+      "title": "Día del libro, la lectura y el derecho de autor",
+      "type": "efemeride",
+      "date": "2026-04-23",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Fomento de la lectura y respeto a los derechos de autor"
+    },
+    {
+      "id": "176645492223656809",
+      "title": "Día internacional de la lucha contra el maltrato infantil",
+      "type": "efemeride",
+      "date": "2026-04-25",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Prevención y denuncia del maltrato infantil"
+    },
+    {
+      "id": "176645492223685956",
+      "title": "Día del carabinero(a)",
+      "type": "efemeride",
+      "date": "2026-04-27",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a la labor de Carabineros de Chile"
+    },
+    {
+      "id": "176645492223636429",
+      "title": "Día de la convivencia escolar",
+      "type": "efemeride",
+      "date": "2026-04-29",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Promoción de una convivencia escolar positiva y respetuosa"
+    },
+    {
+      "id": "176645492223615756",
+      "title": "Día de la integridad en las comunidades educativas",
+      "type": "efemeride",
+      "date": "2026-05-08",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Fomento de la integridad y valores éticos en educación"
+    },
+    {
+      "id": "176645492223637179",
+      "title": "Semana de la educación artística",
+      "type": "actividad",
+      "date": "2026-05-11",
+      "endDate": "2026-05-15",
+      "priority": "medium",
+      "color": "#4CAF50",
+      "description": "Semana dedicada a promover las artes en la educación"
+    },
+    {
+      "id": "176645492223672508",
+      "title": "Día de las y los estudiantes",
+      "type": "efemeride",
+      "date": "2026-05-11",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Celebración del día del estudiante"
+    },
+    {
+      "id": "176645492223685368",
+      "title": "Día de la concientización sobre el diagnóstico de apraxia del habla infantil",
+      "type": "efemeride",
+      "date": "2026-05-14",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Concienciación sobre la apraxia del habla infantil"
+    },
+    {
+      "id": "176645492223631772",
+      "title": "Día internacional de las familias",
+      "type": "efemeride",
+      "date": "2026-05-15",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Celebración de la importancia de la familia"
+    },
+    {
+      "id": "176645492223608822",
+      "title": "Día del Internet",
+      "type": "efemeride",
+      "date": "2026-05-17",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Celebración del impacto de internet en la sociedad"
+    },
+    {
+      "id": "176645492223696383",
+      "title": "Día internacional contra la homofobia, la transfobia y la bifobia",
+      "type": "efemeride",
+      "date": "2026-05-17",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Lucha contra la discriminación por orientación sexual e identidad de género"
+    },
+    {
+      "id": "176645492223641820",
+      "title": "Día de las glorias navales",
+      "type": "efemeride",
+      "date": "2026-05-21",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Conmemoración del Combate Naval de Iquique"
+    },
+    {
+      "id": "176645492223694297",
+      "title": "Día nacional de la memoria y educación sobre desastres socionaturales",
+      "type": "efemeride",
+      "date": "2026-05-22",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Educación sobre prevención de desastres naturales"
+    },
+    {
+      "id": "176645492223694969",
+      "title": "Día del patrimonio",
+      "type": "efemeride",
+      "date": "2026-05-23",
+      "endDate": "2026-05-24",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Celebración del patrimonio cultural nacional"
+    },
+    {
+      "id": "176645492223650173",
+      "title": "Semana de la seguridad escolar",
+      "type": "actividad",
+      "date": "2026-05-25",
+      "endDate": "2026-05-29",
+      "priority": "high",
+      "color": "#4CAF50",
+      "description": "Semana dedicada a la seguridad en el entorno escolar"
+    },
+    {
+      "id": "176645492223609652",
+      "title": "Día del juego",
+      "type": "efemeride",
+      "date": "2026-05-28",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Importancia del juego en el desarrollo infantil"
+    },
+    {
+      "id": "176645492223614809",
+      "title": "Día mundial del medio ambiente",
+      "type": "efemeride",
+      "date": "2026-06-05",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Concienciación sobre la protección ambiental"
+    },
+    {
+      "id": "176645492223635509",
+      "title": "Día internacional contra el trabajo infantil",
+      "type": "efemeride",
+      "date": "2026-06-12",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Lucha contra la explotación laboral infantil"
+    },
+    {
+      "id": "176645492223606871",
+      "title": "Día mundial para prevención de abuso sexual",
+      "type": "efemeride",
+      "date": "2026-06-19",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Prevención del abuso sexual infantil"
+    },
+    {
+      "id": "176645492223613139",
+      "title": "Día de los pueblos originarios",
+      "type": "efemeride",
+      "date": "2026-06-21",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a los pueblos originarios de Chile"
+    },
+    {
+      "id": "176645492223655961",
+      "title": "Día de la educación no sexista",
+      "type": "efemeride",
+      "date": "2026-06-22",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Promoción de una educación libre de estereotipos de género"
+    },
+    {
+      "id": "176645492223672827",
+      "title": "Día nacional de la prevención del consumo de drogas",
+      "type": "efemeride",
+      "date": "2026-06-26",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Prevención del consumo de drogas"
+    },
+    {
+      "id": "176645492223714265",
+      "title": "Día nacional del bombero voluntario",
+      "type": "efemeride",
+      "date": "2026-06-30",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a los bomberos voluntarios"
+    },
+    {
+      "id": "176645492223774626",
+      "title": "Día nacional del cobre",
+      "type": "efemeride",
+      "date": "2026-07-11",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Importancia del cobre en la economía chilena"
+    },
+    {
+      "id": "176645492223778880",
+      "title": "Día internacional contra la trata de personas",
+      "type": "efemeride",
+      "date": "2026-07-30",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Lucha contra la trata y tráfico de personas"
+    },
+    {
+      "id": "176645492223783757",
+      "title": "Día de los derechos del niño y la niña",
+      "type": "efemeride",
+      "date": "2026-08-14",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Protección y promoción de los derechos infantiles"
+    },
+    {
+      "id": "176645492223700277",
+      "title": "English week",
+      "type": "actividad",
+      "date": "2026-08-17",
+      "endDate": "2026-08-21",
+      "priority": "medium",
+      "color": "#4CAF50",
+      "description": "Semana dedicada al aprendizaje del idioma inglés"
+    },
+    {
+      "id": "176645492223766815",
+      "title": "Día de la educación técnico profesional",
+      "type": "efemeride",
+      "date": "2026-08-26",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a la educación técnico profesional"
+    },
+    {
+      "id": "176645492223786441",
+      "title": "Día de las y los profesores normalistas",
+      "type": "efemeride",
+      "date": "2026-08-26",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a los profesores normalistas"
+    },
+    {
+      "id": "176645492223746951",
+      "title": "Día de la técnico de educación parvularia",
+      "type": "efemeride",
+      "date": "2026-08-26",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a las técnicas de educación parvularia"
+    },
+    {
+      "id": "176645492223745805",
+      "title": "Día mundial de la salud sexual y reproductiva",
+      "type": "efemeride",
+      "date": "2026-09-04",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Educación sobre salud sexual y reproductiva"
+    },
+    {
+      "id": "176645492223771641",
+      "title": "Día de la mujer indígena",
+      "type": "efemeride",
+      "date": "2026-09-05",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a las mujeres indígenas"
+    },
+    {
+      "id": "176645492223793699",
+      "title": "Día internacional de la alfabetización y día nacional de la educación de personas jóvenes y adultas",
+      "type": "efemeride",
+      "date": "2026-09-08",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Importancia de la alfabetización y educación de adultos"
+    },
+    {
+      "id": "176645492223708789",
+      "title": "Día mundial para la prevención del suicidio",
+      "type": "efemeride",
+      "date": "2026-09-10",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Prevención del suicidio y promoción de la salud mental"
+    },
+    {
+      "id": "176645492223720496",
+      "title": "Mes de la memoria y la democracia",
+      "type": "actividad",
+      "date": "2026-09-11",
+      "endDate": "2026-10-24",
+      "priority": "high",
+      "color": "#4CAF50",
+      "description": "Mes dedicado a la memoria histórica y valores democráticos"
+    },
+    {
+      "id": "176645492223786710",
+      "title": "Fiestas patrias",
+      "type": "efemeride",
+      "date": "2026-09-18",
+      "endDate": "2026-09-19",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Celebración de las Fiestas Patrias de Chile"
+    },
+    {
+      "id": "176645492223740248",
+      "title": "Día internacional por la paz",
+      "type": "efemeride",
+      "date": "2026-09-21",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Promoción de la paz mundial"
+    },
+    {
+      "id": "176645492223798717",
+      "title": "Día internacional de las lenguas de señas",
+      "type": "efemeride",
+      "date": "2026-09-23",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Importancia de las lenguas de señas"
+    },
+    {
+      "id": "176645492223713563",
+      "title": "Día mundial de prevención del embarazo no planificado en la adolescencia",
+      "type": "efemeride",
+      "date": "2026-09-26",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Prevención del embarazo adolescente"
+    },
+    {
+      "id": "176645492223726555",
+      "title": "Semana de la ciencia",
+      "type": "actividad",
+      "date": "2026-09-28",
+      "endDate": "2026-10-02",
+      "priority": "medium",
+      "color": "#4CAF50",
+      "description": "Semana dedicada a la promoción de las ciencias"
+    },
+    {
+      "id": "176645492223728140",
+      "title": "Día de asistentes de la educación",
+      "type": "efemeride",
+      "date": "2026-10-01",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a los asistentes de la educación"
+    },
+    {
+      "id": "176645492223704118",
+      "title": "Día de la música chilena",
+      "type": "efemeride",
+      "date": "2026-10-04",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Celebración de la música nacional"
+    },
+    {
+      "id": "176645492223742676",
+      "title": "Día mundial de la salud mental",
+      "type": "efemeride",
+      "date": "2026-10-09",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Concienciación sobre la importancia de la salud mental"
+    },
+    {
+      "id": "176645492223777988",
+      "title": "Día de las y los educadores tradicionales",
+      "type": "efemeride",
+      "date": "2026-10-13",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a los educadores tradicionales"
+    },
+    {
+      "id": "176645492223754824",
+      "title": "Día del profesor y la profesora",
+      "type": "efemeride",
+      "date": "2026-10-16",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Celebración del Día del Profesor en Chile"
+    },
+    {
+      "id": "176645492223781775",
+      "title": "Día de la biblioteca escolar",
+      "type": "efemeride",
+      "date": "2026-10-23",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Importancia de las bibliotecas escolares"
+    },
+    {
+      "id": "176645492223787939",
+      "title": "Día de las manipuladoras de alimentos",
+      "type": "efemeride",
+      "date": "2026-10-30",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a las manipuladoras de alimentos escolares"
+    },
+    {
+      "id": "176645492223751512",
+      "title": "Día internacional contra la violencia y el acoso en la escuela, incluido el ciberacoso",
+      "type": "efemeride",
+      "date": "2026-11-05",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Lucha contra el bullying y ciberacoso escolar"
+    },
+    {
+      "id": "176645492223762458",
+      "title": "Día mundial de concienciación sobre tsunami",
+      "type": "efemeride",
+      "date": "2026-11-05",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Concienciación sobre prevención de tsunamis"
+    },
+    {
+      "id": "176645492223731734",
+      "title": "Día nacional de la Antártica chilena",
+      "type": "efemeride",
+      "date": "2026-11-06",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a la soberanía chilena en la Antártica"
+    },
+    {
+      "id": "176645492223731564",
+      "title": "Día del diálogo y el debate",
+      "type": "efemeride",
+      "date": "2026-11-12",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Fomento del diálogo respetuoso y debate constructivo"
+    },
+    {
+      "id": "176645492223708734",
+      "title": "Día de los patrimonios de niños, niñas y adolescentes",
+      "type": "efemeride",
+      "date": "2026-11-15",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Valoración del patrimonio desde la perspectiva infantil"
+    },
+    {
+      "id": "176645492223794146",
+      "title": "Día del apoderado",
+      "type": "efemeride",
+      "date": "2026-11-18",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a los apoderados y su rol en la educación"
+    },
+    {
+      "id": "176645492223761691",
+      "title": "Día mundial para la prevención de la violencia contra los niños y las niñas",
+      "type": "efemeride",
+      "date": "2026-11-19",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Prevención de la violencia infantil"
+    },
+    {
+      "id": "176645492223766399",
+      "title": "Día de los derechos del niño y la niña",
+      "type": "efemeride",
+      "date": "2026-11-20",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Promoción y protección de los derechos infantiles"
+    },
+    {
+      "id": "176645492223778045",
+      "title": "Día mundial en recuerdo de las víctimas de accidentes de tráfico",
+      "type": "efemeride",
+      "date": "2026-11-22",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Conmemoración de víctimas de accidentes de tránsito"
+    },
+    {
+      "id": "176645492223722416",
+      "title": "Día de la educación parvularia y de la educadora de párvulos",
+      "type": "efemeride",
+      "date": "2026-11-22",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento a la educación parvularia"
+    },
+    {
+      "id": "176645492223791095",
+      "title": "Día internacional de la eliminación de la violencia contra la mujer",
+      "type": "efemeride",
+      "date": "2026-11-25",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Lucha contra la violencia de género"
+    },
+    {
+      "id": "176645492223731150",
+      "title": "Día mundial de la lucha contra el sida",
+      "type": "efemeride",
+      "date": "2026-12-01",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Concienciación sobre el VIH/SIDA"
+    },
+    {
+      "id": "176645492223771802",
+      "title": "Día internacional de las personas con discapacidad",
+      "type": "efemeride",
+      "date": "2026-12-03",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Promoción de los derechos e inclusión de personas con discapacidad"
+    },
+    {
+      "id": "176645492223734452",
+      "title": "Día de los derechos humanos",
+      "type": "efemeride",
+      "date": "2026-12-10",
+      "priority": "high",
+      "color": "#FF9800",
+      "description": "Celebración de la Declaración Universal de Derechos Humanos"
+    },
+    {
+      "id": "176645492223743466",
+      "title": "Día internacional de las personas migrantes",
+      "type": "efemeride",
+      "date": "2026-12-18",
+      "priority": "medium",
+      "color": "#FF9800",
+      "description": "Reconocimiento de los derechos de las personas migrantes"
+    },
+    {
+      "id": "176645492223769690",
+      "title": "Fiesta de gala 4ºM",
+      "type": "actividad",
+      "date": "2025-12-05",
+      "endDate": "2025-12-05",
+      "time": "20:00",
+      "priority": "high",
+      "description": "Fiesta de graduación de 4ºM",
+      "color": "#ff2600"
+    },
+    {
+      "id": "176645492223708232",
+      "type": "recordatorio",
+      "title": "Recordatorio General: Seguimiento Mensual",
+      "date": "2026-01-01",
+      "endDate": "2026-12-31",
+      "time": "",
+      "description": "Revisión continua del Plan de Convivencia y ajustes según necesidades emergentes",
+      "color": "#9C27B0",
+      "priority": "medium",
+      "responsable": "Encargado Convivencia",
+      "ambito": "Gestión"
+    },
+    {
+      "id": "176645492223796278",
+      "type": "reunion",
+      "title": "Cierre de actas 2025 y proyección 2026",
+      "date": "2026-01-05",
+      "endDate": "2026-01-05",
+      "time": "09:00",
+      "description": "Análisis de casos RICE y estadísticas de convivencia. Planificación Estratégica",
+      "color": "#2196F3",
+      "priority": "high",
+      "responsable": "Encargado Convivencia",
+      "ambito": "Gestión"
+    },
+    {
+      "id": "176645492223713358",
+      "type": "reunion",
+      "title": "Actualización RICE y Protocolos",
+      "date": "2026-02-23",
+      "endDate": "2026-02-23",
+      "time": "09:00",
+      "description": "Revisión del Reglamento Interno y protocolos según normativa vigente. Pre-inicio Año Escolar",
+      "color": "#2196F3",
+      "priority": "high",
+      "responsable": "Equipo Directivo",
+      "ambito": "Gestión"
+    },
+    {
+      "id": "176645492223713600",
+      "title": "Ingreso a clases docentes",
+      "type": "actividad",
+      "date": "2026-03-02",
+      "endDate": "2026-03-02",
+      "time": "08:30",
+      "priority": "high",
+      "description": "Inicio de actividades académicas e ingreso de docentes",
+      "color": "#4caf50"
+    },
+    {
+      "id": "176645492223788426",
+      "type": "efemeride",
+      "title": "Día del Profesor",
+      "date": "2026-10-16",
+      "endDate": "2026-10-16",
+      "time": "11:00",
+      "description": "Actividades de gratitud y respeto alumno-docente. Día del Profesor",
+      "color": "#FF9800",
+      "priority": "high",
+      "responsable": "CCAA / Centro de Padres",
+      "ambito": "Promoción"
+    },
+    {
+      "id": "176645492223749425",
+      "title": "visita Prevención violencia genero",
+      "type": "actividad",
+      "date": "2025-12-10",
+      "endDate": "2025-12-10",
+      "time": "10:00",
+      "priority": "medium",
+      "description": "Premiación a estudiantes de 7 básico por participar en actividad de prevención de violencia de género.\nFono contacto: +56 948711467 Jorge",
+      "color": "#669c35"
+    },
+    {
+      "id": "176645492223777385",
+      "title": "Ensayo de Graduación 4°M",
+      "type": "actividad",
+      "date": "2025-12-11",
+      "endDate": "2025-12-11",
+      "time": "13:00",
+      "priority": "medium",
+      "description": "Ensayo de graduación de 4 medio y cóctel a las 14:00",
+      "color": "#ffb43f"
+    },
+    {
+      "id": "176645492223713001",
+      "title": "Cóctel de 4°m",
+      "type": "reunion",
+      "date": "2025-12-11",
+      "endDate": "2025-12-11",
+      "time": "14:00",
+      "priority": "medium",
+      "description": "Cóctel con 4 medio, docentes y centro de padres, en la sala 7°",
+      "color": "#00c7fc"
+    },
+    {
+      "id": "176645492223716121",
+      "title": "Ceremonia graduacion 4°M",
+      "type": "actividad",
+      "date": "2025-12-18",
+      "endDate": "2025-12-18",
+      "time": "09:00",
+      "priority": "high",
+      "description": "Ceremonia de grduacion de cuarto medio",
+      "color": "#77bb41"
+    },
+    {
+      "id": "176645492223786545",
+      "title": "Feriado",
+      "type": "efemeride",
+      "date": "2025-12-08",
+      "endDate": "2025-12-08",
+      "time": "00:03",
+      "priority": "low",
+      "description": "Feriado, no hay clases.",
+      "color": "#f5ec00"
+    },
+    {
+      "id": "176645492223774822",
+      "title": "3 dias para navidad",
+      "type": "recordatorio",
+      "date": "2025-12-22",
+      "endDate": "2025-12-25",
+      "time": "",
+      "priority": "low",
+      "description": "Quedan 3 dias para navidad",
+      "color": "#ff2600"
+    },
+    {
+      "id": "1766454946024",
+      "title": "aa",
+      "type": "actividad",
+      "date": "2025-12-22",
+      "endDate": "",
+      "time": "",
+      "priority": "medium",
+      "description": "aa",
+      "color": "#4caf50"
+    },
+    {
+      "id": "1766456122329",
+      "title": "Baby tv",
+      "type": "reunion",
+      "date": "2025-12-22",
+      "endDate": "",
+      "time": "13:04",
+      "priority": "medium",
+      "description": "iuhoñ",
+      "color": "#831100"
+    }
+  ],
+  "lastSave": "2025-12-23T04:06:02.108Z",
+  "version": "2.6",
+  "exportDate": "2025-12-23T04:06:02.108Z",
+  "totalActivities": 88,
+  "syncType": "convivencia_escolar"
+}

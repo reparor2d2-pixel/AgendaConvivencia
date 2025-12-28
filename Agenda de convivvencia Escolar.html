@@ -1,0 +1,3504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Gestión de Convivencia Escolar 2.6</title>
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #64748b;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-sidebar: #1e293b;
+            --text-main: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-sidebar: #0f172a;
+            --text-main: #f8fafc;
+            --text-light: #94a3b8;
+            --border: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg-body); color: var(--text-main); font-size: 14px; overflow-x: hidden; transition: background 0.3s; }
+
+        /* --- LAYOUT & HEADER --- */
+        .container { min-height: 100vh; display: flex; flex-direction: column; }
+        .main-header { background: var(--bg-card); padding: 0.8rem 1.5rem; box-shadow: var(--shadow-sm); z-index: 20; position: relative; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .logo { display: flex; align-items: center; gap: 0.8rem; }
+        .logo-icon { font-size: 1.5rem; color: var(--primary); }
+        .logo-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+        .logo-text p { font-size: 0.75rem; color: var(--text-light); }
+        .header-actions { display: flex; align-items: center; gap: 1rem; }
+
+        .app-wrapper { display: flex; flex: 1; height: calc(100vh - 70px); overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; background: var(--bg-sidebar); color: #fff; transition: width 0.3s ease; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar.collapsed { width: 70px; }
+        .sidebar.collapsed .logo-text, .sidebar.collapsed .btn-text, .sidebar.collapsed .filter-chip, .sidebar.collapsed .save-status, .sidebar.collapsed h3, .sidebar.collapsed .mini-nav span, .sidebar.collapsed #today, .sidebar.collapsed #btnEmail span { display: none; }
+        .sidebar.collapsed .sidebar-section { padding: 1rem 0.5rem; text-align: center; }
+        .sidebar-content { padding: 1.5rem 1rem; overflow-y: auto; height: 100%; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .nav-item { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 15px; background: transparent; border: none; color: #94a3b8; cursor: pointer; border-radius: 8px; font-weight: 500; font-family: inherit; transition: 0.2s; text-align: left; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .nav-item.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .nav-item i { width: 20px; text-align: center; }
+
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 0.5rem 0; }
+        .sidebar-section h3 { font-size: 0.75rem; text-transform: uppercase; color: #64748b; margin-bottom: 10px; padding-left: 5px; letter-spacing: 0.5px; }
+
+        /* Filtros */
+        .filter-chips { display: flex; flex-direction: column; gap: 8px; }
+        .filter-chip { padding: 6px 10px; border: 1px solid transparent; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.03); }
+        .filter-chip:hover { background: rgba(255,255,255,0.1); }
+        .filter-chip.active { background: rgba(255,255,255,0.15); font-weight: 600; border-left: 3px solid #fff; }
+
+        /* Mini Nav */
+        .mini-nav { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 8px; margin-bottom: 10px; }
+        .nav-btn-mini { background: none; border: none; color: #fff; cursor: pointer; padding: 5px; border-radius: 4px; }
+        .nav-btn-mini:hover { background: rgba(255,255,255,0.2); }
+
+        /* Footer Actions */
+        .footer-actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .data-tools { display: flex; gap: 5px; justify-content: space-between; }
+        .tool-btn { flex: 1; padding: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; border-radius: 6px; cursor: pointer; }
+        .tool-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .save-status { font-size: 0.7rem; color: #64748b; text-align: center; }
+
+        /* Email Actions */
+        .email-actions { margin-bottom: 10px; }
+        .btn-primary.full-width { width: 100%; justify-content: center; }
+        .btn-primary:disabled { background: var(--secondary); opacity: 0.5; cursor: not-allowed; }
+
+        /* --- ESTILOS PARA DESTACAR DÍA ACTUAL --- */
+        .calendar-day.current-day {
+            border: 2px solid var(--primary) !important;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(79, 70, 229, 0.15)) !important;
+            box-shadow: 0 0 0 1px var(--primary) inset;
+            animation: pulseToday 2s infinite;
+        }
+
+        .calendar-day.current-day .day-number {
+            background: var(--primary) !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+        @keyframes pulseToday {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.2); }
+            70% { box-shadow: 0 0 0 4px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+
+        [data-theme="dark"] .calendar-day.current-day {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(79, 70, 229, 0.3)) !important;
+            border-color: #818cf8 !important;
+        }
+
+        .gantt-day-header.current-day {
+            position: relative;
+            z-index: 2;
+            font-weight: bold !important;
+            background: rgba(79, 70, 229, 0.15) !important;
+            border-left: 3px solid var(--primary) !important;
+            border-right: 3px solid var(--primary) !important;
+        }
+
+        .gantt-day-header.current-day::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+            animation: ganttHighlight 2s ease-in-out infinite;
+        }
+
+        @keyframes ganttHighlight {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .gantt-current-day-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: rgba(79, 70, 229, 0.05);
+            z-index: 0;
+            animation: columnPulse 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes columnPulse {
+            0%, 100% { background: rgba(79, 70, 229, 0.05); }
+            50% { background: rgba(79, 70, 229, 0.1); }
+        }
+
+        /* --- NUEVOS ESTILOS PARA CARTA GANTT CON SCROLL HORIZONTAL --- */
+        .gantt-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .gantt-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-card);
+            position: relative;
+        }
+
+        .gantt-scroll-info {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gantt-scroll-info i {
+            color: var(--primary);
+        }
+
+        .gantt-wrapper {
+            min-width: 1200px; /* Ancho mínimo para asegurar que haya scroll */
+            position: relative;
+        }
+
+        .gantt-header {
+            display: flex;
+            background: var(--bg-body);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .gantt-title-col {
+            width: 250px;
+            min-width: 250px;
+            padding: 10px;
+            font-weight: 600;
+            border-right: 1px solid var(--border);
+            background: var(--bg-body);
+            position: sticky;
+            left: 0;
+            z-index: 11;
+        }
+
+        .gantt-timeline-col {
+            flex: 1;
+            min-width: 1200px;
+        }
+
+        .timeline-days {
+            display: flex;
+            min-width: min-content;
+        }
+
+        .gantt-day-header {
+            min-width: 40px;
+            width: 40px;
+            text-align: center;
+            padding: 5px;
+            border-right: 1px solid var(--border);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            background: var(--bg-body);
+        }
+
+        .gantt-content {
+            position: relative;
+            min-height: 400px;
+        }
+
+        .gantt-row {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            min-height: 40px;
+            position: relative;
+        }
+
+        .gantt-task-name {
+            width: 250px;
+            min-width: 250px;
+            padding: 10px;
+            border-right: 1px solid var(--border);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            position: sticky;
+            left: 0;
+            z-index: 9;
+        }
+
+        .gantt-task-bar-area {
+            flex: 1;
+            position: relative;
+            min-width: 1200px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 40px);
+            background-size: 40px 100%;
+        }
+
+        .gantt-bar {
+            position: absolute;
+            height: 24px;
+            top: 8px;
+            border-radius: 4px;
+            padding: 0 8px;
+            color: #fff;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+
+        .gantt-bar:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .gantt-bar-icon {
+            font-size: 1rem !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Scrollbar personalizada para Gantt */
+        .gantt-scroll-container::-webkit-scrollbar {
+            height: 10px;
+            width: 10px;
+        }
+
+        .gantt-scroll-container::-webkit-scrollbar-track {
+            background: var(--bg-body);
+            border-radius: 4px;
+        }
+
+        .gantt-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .gantt-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: var(--text-light);
+        }
+
+        .gantt-scroll-container::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* Tooltip para vista previa en Gantt */
+        .gantt-tooltip {
+            position: absolute;
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: var(--shadow-lg);
+            min-width: 250px;
+            max-width: 350px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            pointer-events: none;
+        }
+
+        .gantt-tooltip.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .gantt-tooltip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gantt-tooltip-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .gantt-tooltip-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .gantt-tooltip-content {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .gantt-tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .gantt-tooltip-label {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .gantt-tooltip-value {
+            color: var(--text-light);
+        }
+
+        /* --- ESTILOS PARA ALARMAS Y NOTIFICACIONES --- */
+        .alarm-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: #f59e0b;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            margin-left: 5px;
+            animation: pulseAlarm 2s infinite;
+            cursor: help;
+        }
+
+        @keyframes pulseAlarm {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 10px #f59e0b; }
+        }
+
+        .alarm-active {
+            position: relative;
+        }
+
+        .alarm-active::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 50%;
+            animation: blinkAlarm 1.5s infinite;
+        }
+
+        @keyframes blinkAlarm {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .alarm-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .alarm-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .alarm-option:hover {
+            background: var(--bg-body);
+        }
+
+        .alarm-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .alarm-option-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .alarm-option-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .notification-alarm {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-left: 5px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+            max-width: 350px;
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .notification-alarm.hidden {
+            display: none;
+        }
+
+        .notification-alarm-icon {
+            font-size: 1.5rem;
+            color: #f59e0b;
+            flex-shrink: 0;
+        }
+
+        .notification-alarm-content {
+            flex: 1;
+        }
+
+        .notification-alarm-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1f2937;
+        }
+
+        .notification-alarm-message {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .notification-alarm-time {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .notification-alarm-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .notification-alarm-close:hover {
+            color: #6b7280;
+        }
+
+        .alarm-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .alarm-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(79, 70, 229, 0.1);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-radius: 6px;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .alarm-toggle-btn:hover {
+            background: rgba(79, 70, 229, 0.15);
+        }
+
+        .alarm-toggle-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { flex: 1; padding: 2rem; overflow-y: auto; background: var(--bg-body); position: relative; }
+        .view-container { display: none; animation: fadeIn 0.3s ease; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .view-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- DASHBOARD --- */
+        .dashboard-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--bg-card); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+        .summary-card { display: flex; align-items: center; gap: 1.5rem; color: white; position: relative; overflow: hidden; }
+        .summary-card .card-icon { font-size: 2.5rem; opacity: 0.8; }
+        .summary-card .card-data { display: flex; flex-direction: column; }
+        .summary-card .big-number { font-size: 2rem; font-weight: 700; line-height: 1; }
+        .summary-card .label { font-size: 0.9rem; opacity: 0.9; }
+
+        .gradient-1 { background: linear-gradient(135deg, #4f46e5, #818cf8); }
+        .gradient-2 { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+        .gradient-3 { background: linear-gradient(135deg, #10b981, #34d399); }
+
+        .dashboard-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .chart-card h3, .upcoming-card h3 { margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-main); }
+        .simple-bar-chart { display: flex; flex-direction: column; gap: 10px; margin-top: 1rem; }
+        .chart-bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+        .chart-bar-bg { flex: 1; height: 8px; background: var(--bg-body); border-radius: 4px; overflow: hidden; }
+        .chart-bar-fill { height: 100%; border-radius: 4px; }
+        .upcoming-list { display: flex; flex-direction: column; gap: 10px; }
+        .upcoming-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--bg-body); border-radius: 8px; border-left: 4px solid #ccc; }
+        .upcoming-date { font-weight: 700; color: var(--primary); font-size: 0.9rem; min-width: 50px; text-align: center; }
+
+        /* --- CALENDAR FIXES --- */
+        .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 600; padding: 10px; background: var(--bg-card); border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border); color: var(--text-light); }
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            background: var(--border); 
+            border: 1px solid var(--border); 
+            border-top: none; 
+            gap: 1px;
+            grid-auto-rows: 140px;
+        }
+        .calendar-day { 
+            height: 140px;
+            background: var(--bg-card); 
+            padding: 8px; 
+            cursor: pointer; 
+            position: relative; 
+            transition: 0.2s; 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .calendar-day:hover { background: #f8fafc; }
+        [data-theme="dark"] .calendar-day:hover { background: #2d3748; }
+        .calendar-day.today { background: rgba(79, 70, 229, 0.05); }
+        .calendar-day.empty { background: var(--bg-body); }
+        .day-number { 
+            font-weight: 600; 
+            font-size: 0.9rem; 
+            margin-bottom: 5px; 
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+        .today .day-number { 
+            color: var(--primary); 
+            background: rgba(79, 70, 229, 0.1); 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .day-events { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px; 
+            flex: 1;
+            overflow-y: auto;
+            max-height: calc(100% - 25px);
+            padding-right: 2px;
+        }
+        .cal-event { 
+            font-size: 0.75rem; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            color: #fff; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            cursor: pointer; 
+            flex-shrink: 0;
+            max-width: 100%;
+        }
+        .cal-event:hover { opacity: 0.9; transform: scale(1.02); }
+        .more-events {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-align: center;
+            padding: 2px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .more-events:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        /* --- LIST VIEW CON SCROLL INDEPENDIENTE --- */
+        .list-view-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: calc(100vh - 200px);
+        }
+
+        .list-toolbar { 
+            display: flex; 
+            gap: 1rem; 
+            margin-bottom: 1rem; 
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+        
+        .search-box { flex: 1; position: relative; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+        .search-box input { width: 100%; padding: 10px 10px 10px 35px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text-main); }
+        .sort-select { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text-main); }
+        
+        .list-content-wrapper {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .list-instructions { 
+            margin-bottom: 10px; 
+            font-size: 0.85rem; 
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+        
+        .activities-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 5px;
+            max-height: calc(100vh - 300px);
+        }
+
+        /* Estilos para scrollbar personalizada */
+        .activities-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .activities-list::-webkit-scrollbar-track {
+            background: var(--bg-body);
+            border-radius: 4px;
+        }
+
+        .activities-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .activities-list::-webkit-scrollbar-thumb:hover {
+            background: var(--text-light);
+        }
+
+        /* List Item with Checkbox */
+        .list-item { 
+            background: var(--bg-card); 
+            padding: 1rem; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            border-left-width: 5px; 
+            display: flex; 
+            align-items: center; 
+            box-shadow: var(--shadow-sm); 
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .list-item:hover { transform: translateX(4px); box-shadow: var(--shadow-md); }
+        .list-checkbox-container { padding-right: 15px; border-right: 1px solid var(--border); margin-right: 15px; display: flex; align-items: center; }
+        .custom-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); transform: scale(1.1); }
+        .list-info { flex: 1; }
+        .list-info h4 { margin-bottom: 4px; }
+        .list-meta { font-size: 0.85rem; color: var(--text-light); display: flex; gap: 10px; }
+
+        /* --- MODAL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-container { background: var(--bg-card); width: 95%; max-width: 800px; border-radius: var(--radius); box-shadow: var(--shadow-lg); overflow: hidden; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+        .modal-form { padding: 2rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-body); color: var(--text-main); font-family: inherit; }
+        .full-width { grid-column: 1 / -1; }
+
+        .type-selector-compact { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .type-radio input { display: none; }
+        .type-radio .radio-btn { display: flex; align-items: center; gap: 6px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.85rem; justify-content: center; transition: 0.2s; }
+        .type-radio input:checked + .radio-btn { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .form-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; pt: 1rem; border-top: 1px solid var(--border); }
+        .right-actions { display: flex; gap: 10px; }
+
+        /* Buttons & Utils */
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-secondary:hover { background: var(--border); }
+        .btn-text { background: none; border: none; cursor: pointer; font-weight: 500; padding: 8px; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-light); cursor: pointer; padding: 5px; }
+
+        .notification { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 12px 20px; border-radius: 8px; display: none; z-index: 2000; align-items: center; gap: 10px; box-shadow: var(--shadow-lg); }
+        .notification.success { background: #10b981; }
+        .notification.error { background: #ef4444; }
+        .notification.show { display: flex; animation: slideInRight 0.3s; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .form-grid { grid-template-columns: 1fr; gap: 0; }
+            .dashboard-row { grid-template-columns: 1fr; }
+            .sidebar { position: absolute; height: 100%; z-index: 100; transform: translateX(-100%); width: 260px !important; }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar.collapsed { width: 260px; }
+            .app-wrapper { position: relative; }
+            .list-view-container {
+                max-height: calc(100vh - 150px);
+            }
+            .activities-list {
+                max-height: calc(100vh - 250px);
+            }
+            .alarm-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .gantt-scroll-container {
+                margin: 0 -1rem;
+                width: calc(100% + 2rem);
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+            .gantt-title-col {
+                width: 200px;
+                min-width: 200px;
+            }
+            .gantt-task-name {
+                width: 200px;
+                min-width: 200px;
+            }
+        }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            .sidebar, .main-header, .theme-switcher, .list-toolbar, .view-tabs, .btn-primary, .btn-secondary, .notification, #generateReport, .whatsapp-btn, .notification-alarm { display: none !important; }
+            .container { height: auto; display: block; }
+            .app-wrapper { height: auto; overflow: visible; display: block; }
+            .main-content { padding: 0; overflow: visible; background: white; }
+            .view-container { display: none !important; }
+            .view-container.active { display: block !important; }
+            body { background: white; color: black; }
+            
+            #calendarView.active .calendar-grid { border: 1px solid #000; }
+            .calendar-day { border: 1px solid #ddd; min-height: 80px; height: auto !important; }
+            .cal-event { color: black !important; border: 1px solid #ccc; background: #f0f0f0 !important; }
+        }
+
+        /* --- WHATSAPP BUTTON --- */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 35px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+            text-decoration: none;
+            animation: pulse 2s infinite;
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #128c7e;
+            transform: scale(1.1);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+        
+        .theme-switcher {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1001;
+        }
+        
+        .theme-switcher button {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Tooltip para botón de limpiar duplicados */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Botón de limpiar duplicados */
+        .clean-duplicates-btn {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .clean-duplicates-btn:hover {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+        }
+        
+        .clean-duplicates-btn:disabled {
+            background: var(--secondary);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Estilos adicionales para alarmas */
+        .alarm-flash {
+            animation: flashAlarm 1s infinite;
+        }
+
+        @keyframes flashAlarm {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .alarm-sound-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .alarm-sound-btn.muted {
+            background: var(--secondary);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-switcher">
+        <button id="themeToggle" title="Cambiar Tema">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Contenedor para notificaciones de alarmas -->
+    <div id="alarmNotificationsContainer"></div>
+
+    <div class="container">
+        <header class="main-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="toggleSidebar" class="icon-btn"><i class="fas fa-bars"></i></button>
+                    <div class="logo">
+                        <div class="logo-icon"><i class="fas fa-school"></i></div>
+                        <div class="logo-text">
+                            <h1>Convivencia Escolar</h1>
+                            <p>Gestión & Planificación</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="btn-primary" id="addActivity">
+                        <i class="fas fa-plus"></i> <span class="btn-text">Nueva Actividad</span>
+                    </button>
+                    <div class="date-display">
+                        <i class="fas fa-calendar-day"></i>
+                        <span id="currentDate">Cargando...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-wrapper">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-section nav-menu">
+                        <button class="nav-item active" data-view="dashboard">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </button>
+                        <button class="nav-item" data-view="calendar">
+                            <i class="fas fa-calendar-alt"></i> Calendario
+                        </button>
+                        <button class="nav-item" data-view="gantt">
+                            <i class="fas fa-stream"></i> Carta Gantt
+                        </button>
+                        <button class="nav-item" data-view="list">
+                            <i class="fas fa-list-ul"></i> Lista General
+                        </button>
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-filter"></i> Filtrar por Tipo</h3>
+                        <div class="filter-chips">
+                            <div class="filter-chip active" data-filter="all">Todo</div>
+                            <div class="filter-chip" data-filter="actividad" style="border-color: #4CAF50; color: #4CAF50;">Actividades</div>
+                            <div class="filter-chip" data-filter="reunion" style="border-color: #2196F3; color: #2196F3;">Reuniones</div>
+                            <div class="filter-chip" data-filter="efemeride" style="border-color: #FF9800; color: #FF9800;">Efemérides</div>
+                            <div class="filter-chip" data-filter="recordatorio" style="border-color: #9C27B0; color: #9C27B0;">Recordatorios</div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="mini-nav">
+                            <button class="nav-btn-mini" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                            <span id="currentMonth">Mes Actual</span>
+                            <button class="nav-btn-mini" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <button class="btn-primary full-width" id="today">Ir a Hoy</button>
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+
+                    <!-- NUEVA SECCIÓN DE CONFIGURACIÓN DE ALARMAS -->
+                    <div class="sidebar-section">
+                        <h3><i class="fas fa-bell"></i> Configurar Alarmas</h3>
+                        <div style="margin-bottom: 10px;">
+                            <button class="alarm-toggle-btn" id="toggleAllAlarms">
+                                <i class="fas fa-bell"></i> 
+                                <span class="btn-text">Activar Todas las Alarmas</span>
+                            </button>
+                        </div>
+                        <div class="alarm-options" id="alarmOptions">
+                            <div class="alarm-option" data-minutes="5">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">5 min</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="15">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">15 min</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="30">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">30 min</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="60">
+                                <div class="alarm-option-icon">⏰</div>
+                                <div class="alarm-option-label">1 hora</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="1440">
+                                <div class="alarm-option-icon">📅</div>
+                                <div class="alarm-option-label">1 día</div>
+                            </div>
+                            <div class="alarm-option" data-minutes="0">
+                                <div class="alarm-option-icon">🔕</div>
+                                <div class="alarm-option-label">Ninguna</div>
+                            </div>
+                        </div>
+                        <small style="display: block; margin-top: 5px; font-size: 0.7rem; color: #94a3b8; text-align: center;">
+                            Alarma por defecto para nuevas actividades
+                        </small>
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+
+                    <div class="sidebar-section footer-actions">
+                        <div class="email-actions">
+                            <button class="btn-primary full-width" id="btnEmail" disabled>
+                                <i class="fas fa-envelope"></i> Enviar (<span id="selectedCount">0</span>)
+                            </button>
+                        </div>
+
+                        <button class="btn-secondary" id="generateReport">
+                            <i class="fas fa-print"></i> Imprimir Reporte
+                        </button>
+                        
+                        <!-- BOTÓN PARA ELIMINAR DUPLICADOS -->
+                        <button class="clean-duplicates-btn tooltip" id="cleanDuplicates" title="Eliminar actividades duplicadas">
+                            <i class="fas fa-broom"></i> <span class="btn-text">Limpiar Duplicados</span>
+                            <span class="tooltiptext">Elimina actividades con el mismo título, fecha y tipo</span>
+                        </button>
+                        
+                        <div class="data-tools">
+                            <button class="tool-btn" id="backupData" title="Guardar Manual">
+                                <i class="fas fa-save"></i>
+                            </button>
+                            <button class="tool-btn" id="exportData" title="Exportar JSON">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="tool-btn" id="importDataBtn" title="Importar JSON">
+                                <i class="fas fa-upload"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- NUEVA SECCIÓN DE SINCRONIZACIÓN -->
+                        <div class="sidebar-divider"></div>
+                        <div class="sync-section" style="margin-top: 10px;">
+                            <h3 style="font-size: 0.75rem; color: #64748b; margin-bottom: 10px; text-transform: uppercase;">
+                                <i class="fas fa-sync-alt"></i> Sincronización entre Equipos
+                            </h3>
+                            
+                            <button class="tool-btn" id="exportSync" title="Exportar para otro equipo" style="width: 100%; margin-bottom: 5px;">
+                                <i class="fas fa-file-export"></i> <span class="btn-text">Exportar Archivo Sync</span>
+                            </button>
+                            
+                            <button class="tool-btn" id="importSyncBtn" title="Importar desde otro equipo" style="width: 100%;">
+                                <i class="fas fa-file-import"></i> <span class="btn-text">Importar Archivo Sync</span>
+                            </button>
+                            
+                            <small style="display: block; margin-top: 5px; font-size: 0.7rem; color: #94a3b8; text-align: center;">
+                                Para usar en otro equipo
+                            </small>
+                        </div>
+                        
+                        <small class="save-status">Guardado: <span id="lastSave">--:--</span></small>
+                        <small class="save-status" id="duplicateCount">Duplicados: <span id="duplicateNumber">0</span></small>
+                        <small class="save-status" id="alarmStatus">Alarmas activas: <span id="alarmCount">0</span></small>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div id="dashboardView" class="view-container active">
+                    <div class="dashboard-grid">
+                        <div class="summary-cards">
+                            <div class="card summary-card gradient-1">
+                                <div class="card-icon"><i class="fas fa-users"></i></div>
+                                <div class="card-data">
+                                    <span class="big-number" id="dashTotalActivities">0</span>
+                                    <span class="label">Actividades Totales</span>
+                                </div>
+                            </div>
+                            <div class="card summary-card gradient-2">
+                                <div class="card-icon"><i class="fas fa-clock"></i></div>
+                                <div class="card-data">
+                                    <span class="big-number" id="dashPending">0</span>
+                                    <span class="label">Pendientes este Mes</span>
+                                </div>
+                            </div>
+                            <div class="card summary-card gradient-3">
+                                <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="card-data">
+                                    <span class="big-number" id="dashHighPriority">0</span>
+                                    <span class="label">Prioridad Alta</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-row">
+                            <div class="card chart-card">
+                                <h3>Distribución por Tipo</h3>
+                                <div class="simple-bar-chart" id="typeDistribution"></div>
+                            </div>
+                            <div class="card upcoming-card">
+                                <h3><i class="fas fa-calendar-week"></i> Próximos 7 Días</h3>
+                                <div class="upcoming-list" id="upcomingList"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="calendarView" class="view-container">
+                    <div class="calendar-header">
+                        <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                </div>
+
+                <div id="ganttView" class="view-container">
+                    <div class="gantt-controls">
+                        <span class="info-tag"><i class="fas fa-info-circle"></i> Visualizando mes actual</span>
+                        <div class="gantt-scroll-info">
+                            <i class="fas fa-arrows-alt-h"></i> Usa la barra de scroll horizontal para ver todos los días
+                        </div>
+                    </div>
+                    <div class="gantt-scroll-container" id="ganttScrollContainer">
+                        <div class="gantt-wrapper">
+                            <div class="gantt-header">
+                                <div class="gantt-title-col">Actividad</div>
+                                <div class="gantt-timeline-col">
+                                    <div class="timeline-days"></div>
+                                </div>
+                            </div>
+                            <div id="ganttContent" class="gantt-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA LISTA CON SCROLL INDEPENDIENTE -->
+                <div id="listView" class="view-container">
+                    <div class="list-view-container">
+                        <div class="list-toolbar">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchInput" placeholder="Buscar por título o descripción...">
+                            </div>
+                            <select id="sortSelect" class="sort-select">
+                                <option value="date">📅 Fecha</option>
+                                <option value="priority">⚡ Prioridad</option>
+                                <option value="type">🏷️ Tipo</option>
+                            </select>
+                            <!-- Botón de limpiar duplicados en la vista lista -->
+                            <button class="clean-duplicates-btn" id="cleanDuplicatesList" style="margin-left: auto;">
+                                <i class="fas fa-broom"></i> Limpiar Duplicados
+                            </button>
+                        </div>
+                        
+                        <div class="list-content-wrapper">
+                            <div class="list-instructions">
+                                <i class="fas fa-check-square"></i> Selecciona las casillas para enviar por correo.
+                                <span id="alarmHint" style="color: #f59e0b; margin-left: 10px;">
+                                    <i class="fas fa-bell"></i> Los eventos con alarma se marcan con un indicador naranja
+                                </span>
+                            </div>
+                            <div id="activitiesList" class="activities-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="activityModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nueva Actividad</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            
+            <form id="activityForm" class="modal-form">
+                <input type="hidden" id="activityId">
+                
+                <div class="form-grid">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <div class="type-selector-compact">
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="actividad" checked>
+                                    <span class="radio-btn"><i class="fas fa-users"></i> Actividad</span>
+                                </label>
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="reunion">
+                                    <span class="radio-btn"><i class="fas fa-handshake"></i> Reunión</span>
+                                </label>
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="efemeride">
+                                    <span class="radio-btn"><i class="fas fa-star"></i> Efeméride</span>
+                                </label>
+                                <label class="type-radio">
+                                    <input type="radio" name="activityType" value="recordatorio">
+                                    <span class="radio-btn"><i class="fas fa-bell"></i> Recordatorio</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" id="activityTitle" placeholder="Nombre de la actividad" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Prioridad</label>
+                            <select id="activityPriority">
+                                <option value="low">🟢 Baja</option>
+                                <option value="medium" selected>🟡 Media</option>
+                                <option value="high">🔴 Alta</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-col">
+                        <div class="form-row-dates">
+                            <div class="form-group">
+                                <label>Inicio</label>
+                                <input type="date" id="activityDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Hora</label>
+                                <input type="time" id="activityTime">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Fin (Opcional)</label>
+                            <input type="date" id="activityEndDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <div class="color-picker-simple">
+                                <input type="color" id="activityColor" value="#4CAF50">
+                                <span class="color-label">Seleccionar color</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NUEVA SECCIÓN PARA CONFIGURAR ALARMA -->
+                <div class="form-group full-width" id="alarmSettings">
+                    <label><i class="fas fa-bell"></i> Configurar Alarma</label>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <button type="button" class="alarm-toggle-btn" id="toggleAlarm">
+                            <i class="fas fa-bell-slash"></i> 
+                            <span>Alarma desactivada</span>
+                        </button>
+                        <select id="alarmTime" style="flex: 1;" disabled>
+                            <option value="5">5 minutos antes</option>
+                            <option value="15">15 minutos antes</option>
+                            <option value="30">30 minutos antes</option>
+                            <option value="60">1 hora antes</option>
+                            <option value="1440">1 día antes</option>
+                            <option value="0" selected>En el momento del evento</option>
+                        </select>
+                    </div>
+                    <small style="display: block; margin-top: 5px; color: var(--text-light);">
+                        La alarma te notificará antes del inicio del evento.
+                    </small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Descripción</label>
+                    <textarea id="activityDescription" rows="3" placeholder="Detalles adicionales..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-text" id="deleteActivity" style="color: #F44336; display: none;">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                     <button type="button" class="btn-text" id="duplicateActivity" style="color: #2196F3; display: none;">
+                        <i class="fas fa-copy"></i> Clonar
+                    </button>
+                    <div class="right-actions">
+                        <button type="button" class="btn-secondary modal-close">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"><i class="fas fa-info-circle"></i> <span id="notificationText"></span></div>
+    
+    <!-- Tooltip para vista previa en Gantt (se crea dinámicamente) -->
+    <div id="ganttTooltip" class="gantt-tooltip"></div>
+    
+    <input type="file" id="fileImport" accept=".json" style="display: none;">
+    <input type="file" id="syncFileImport" accept=".json" style="display: none;">
+
+    <a href="https://wa.me/56965388022?text=Hola,%20necesito%20ayuda%20con%20la%20convivencia%20escolar." class="whatsapp-btn" target="_blank" title="Enviar mensaje por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Botón para probar sonido de alarma -->
+    <div class="alarm-sound-btn" id="testAlarmSound" title="Probar sonido de alarma">
+        <i class="fas fa-volume-up"></i>
+    </div>
+
+    <script>
+        // =============== GESTIÓN ESCOLAR 2.6 ===============
+        // Versión completa con NOTIFICACIONES DEL SISTEMA que aparecen sobre cualquier ventana
+        // MODIFICADO: Carta Gantt con desplazamiento horizontal
+
+        // Variables globales
+        let currentDate = new Date();
+        let activities = [];
+        let currentFilter = 'all';
+        let currentView = 'dashboard';
+        let editingId = null;
+        let selectedIds = new Set();
+        let alarmTimers = new Map();
+        let defaultAlarmMinutes = 15;
+        let globalAlarmsEnabled = true;
+        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        const SYNC_FILENAME = 'convivencia_escolar_sync.json';
+
+        // Mapeo de iconos por tipo de actividad
+        const typeIcons = {
+            'actividad': '👥',
+            'reunion': '🤝',
+            'efemeride': '⭐',
+            'recordatorio': '🔔'
+        };
+
+        // Mapeo de nombres completos por tipo
+        const typeNames = {
+            'actividad': 'Actividad',
+            'reunion': 'Reunión',
+            'efemeride': 'Efeméride',
+            'recordatorio': 'Recordatorio'
+        };
+
+        // Mapeo de iconos de prioridad
+        const priorityIcons = {
+            'high': '🔴',
+            'medium': '🟡',
+            'low': '🟢'
+        };
+
+        // Mapeo de nombres de prioridad
+        const priorityNames = {
+            'high': 'Alta',
+            'medium': 'Media',
+            'low': 'Baja'
+        };
+
+        // Mapeo de textos para alarmas
+        const alarmTexts = {
+            '5': '5 minutos antes',
+            '15': '15 minutos antes',
+            '30': '30 minutos antes',
+            '60': '1 hora antes',
+            '1440': '1 día antes',
+            '0': 'En el momento'
+        };
+
+        // Función para normalizar fechas (CORREGIDA - Sin problemas de zona horaria)
+        function normalizeDate(dateString) {
+            if (!dateString) return new Date();
+            
+            // Si ya es un objeto Date, devolverlo
+            if (dateString instanceof Date) return dateString;
+            
+            // Manejar formato YYYY-MM-DD (el formato de input date)
+            const parts = dateString.split('-');
+            if (parts.length === 3) {
+                const year = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1;
+                const day = parseInt(parts[2]);
+                
+                // Crear fecha LOCAL, no UTC
+                return new Date(year, month, day, 0, 0, 0, 0);
+            }
+            
+            return new Date(dateString);
+        }
+
+        // Obtener día directamente del string de fecha
+        function getDayFromDateString(dateString) {
+            if (!dateString) return 1;
+            
+            if (typeof dateString === 'string' && dateString.includes('-')) {
+                const parts = dateString.split('-');
+                if (parts.length === 3) {
+                    return parseInt(parts[2]);
+                }
+            }
+            
+            const date = normalizeDate(dateString);
+            return date.getDate();
+        }
+
+        // Crear fecha desde string
+        function createDateFromString(dateString) {
+            if (!dateString) return new Date();
+            
+            if (typeof dateString === 'string' && dateString.includes('-')) {
+                const parts = dateString.split('-');
+                if (parts.length === 3) {
+                    const year = parseInt(parts[0]);
+                    const month = parseInt(parts[1]) - 1;
+                    const day = parseInt(parts[2]);
+                    return new Date(year, month, day, 0, 0, 0, 0);
+                }
+            }
+            
+            return normalizeDate(dateString);
+        }
+
+        // Función auxiliar para comparar fechas
+        function compareDates(date1, date2) {
+            const d1 = createDateFromString(date1);
+            const d2 = createDateFromString(date2);
+            
+            d1.setHours(0, 0, 0, 0);
+            d2.setHours(0, 0, 0, 0);
+            
+            return d1.getTime() === d2.getTime();
+        }
+
+        // Utilidades
+        function formatDateFriendly(dateStr) {
+            if(!dateStr) return '';
+            
+            let date;
+            
+            if (typeof dateStr === 'string' && dateStr.includes('-')) {
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    const year = parseInt(parts[0]);
+                    const month = parseInt(parts[1]) - 1;
+                    const day = parseInt(parts[2]);
+                    date = new Date(year, month, day);
+                } else {
+                    date = new Date(dateStr);
+                }
+            } else {
+                date = new Date(dateStr);
+            }
+            
+            return date.toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        // =============== FUNCIONES PRINCIPALES ===============
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            loadData();
+            updateCurrentDate();
+            checkForDuplicates();
+            
+            initGanttTooltip();
+            initAlarmSystem();
+            loadAlarmSettings();
+            startAlarmChecker();
+            
+            // Solicitar permisos para notificaciones del sistema INMEDIATAMENTE
+            requestNotificationPermission();
+            
+            setTimeout(setupDashboardClickEvents, 500);
+        });
+
+        // =============== SISTEMA DE NOTIFICACIONES DEL SISTEMA ===============
+        
+        // Solicitar permiso para notificaciones del sistema (NUEVA FUNCIÓN MEJORADA)
+        function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                console.log("Este navegador no soporta notificaciones del sistema");
+                return;
+            }
+            
+            // Verificar si ya tenemos permiso
+            if (Notification.permission === "granted") {
+                console.log("Notificaciones del sistema ya permitidas");
+                return;
+            }
+            
+            // Si está denegado, mostrar instrucciones
+            if (Notification.permission === "denied") {
+                console.log("Permiso de notificaciones denegado por el usuario");
+                showNotification("Las notificaciones del sistema están bloqueadas. Por favor, habilítalas en la configuración de tu navegador para recibir alarmas.", "error");
+                return;
+            }
+            
+            // Si está en default, solicitar permiso
+            if (Notification.permission === "default") {
+                // Usar un pequeño retraso para que no interrumpa la carga inicial
+                setTimeout(() => {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            console.log("Permiso de notificaciones concedido");
+                            showNotification("✅ Notificaciones del sistema activadas. Recibirás alarmas incluso con el navegador minimizado.", "success");
+                        } else if (permission === "denied") {
+                            console.log("Permiso de notificaciones denegado");
+                            showNotification("❌ Notificaciones del sistema bloqueadas. No recibirás alarmas con el navegador minimizado.", "error");
+                        }
+                    });
+                }, 2000); // Esperar 2 segundos después de cargar la página
+            }
+        }
+
+        // Mostrar notificación del sistema (aparece sobre cualquier ventana)
+        function showSystemNotification(activity) {
+            if (!("Notification" in window)) {
+                console.log("No se pueden mostrar notificaciones del sistema");
+                return false;
+            }
+            
+            if (Notification.permission !== "granted") {
+                console.log("Permiso de notificaciones no concedido");
+                return false;
+            }
+            
+            try {
+                // Crear notificación del sistema con opciones avanzadas
+                const options = {
+                    body: `La actividad "${activity.title}" comenzará ${getAlarmText(activity.alarmMinutes)}.`,
+                    icon: 'https://cdn-icons-png.flaticon.com/512/3062/3062634.png',
+                    badge: 'https://cdn-icons-png.flaticon.com/512/3062/3062634.png',
+                    tag: `convivencia-alarm-${activity.id}`,
+                    requireInteraction: true, // IMPORTANTE: Mantiene la notificación visible hasta que el usuario interactúe
+                    silent: false, // Reproduce sonido
+                    vibrate: [200, 100, 200], // Patrón de vibración para móviles
+                    data: {
+                        url: window.location.href,
+                        activityId: activity.id,
+                        timestamp: new Date().toISOString()
+                    },
+                    actions: [
+                        {
+                            action: 'open',
+                            title: 'Abrir aplicación'
+                        },
+                        {
+                            action: 'snooze',
+                            title: 'Posponer 5 min'
+                        }
+                    ]
+                };
+                
+                const notification = new Notification(`⏰ Alarma: ${activity.title}`, options);
+                
+                // Manejar clics en la notificación
+                notification.onclick = function(event) {
+                    event.preventDefault();
+                    
+                    // Enfocar la ventana del navegador
+                    window.focus();
+                    
+                    // Abrir la actividad en la aplicación
+                    if (this.data && this.data.activityId) {
+                        openModal(this.data.activityId);
+                    }
+                    
+                    // Cerrar la notificación
+                    this.close();
+                };
+                
+                // Manejar acciones de la notificación
+                notification.addEventListener('click', function(event) {
+                    if (event.action === 'open') {
+                        window.focus();
+                        if (activity.id) {
+                            openModal(activity.id);
+                        }
+                    } else if (event.action === 'snooze') {
+                        // Posponer la alarma 5 minutos
+                        activity.alarmMinutes = 5;
+                        activity.lastAlarmTriggeredDate = '';
+                        saveData();
+                        showNotification(`Alarma pospuesta 5 minutos para "${activity.title}"`, 'success');
+                    }
+                    notification.close();
+                });
+                
+                // Cerrar automáticamente después de 30 segundos (solo si no es requireInteraction)
+                setTimeout(() => {
+                    notification.close();
+                }, 30000);
+                
+                return true;
+            } catch (error) {
+                console.error("Error mostrando notificación del sistema:", error);
+                return false;
+            }
+        }
+
+        // Mostrar notificación persistente (para cuando la ventana está minimizada)
+        function showPersistentNotification(activity) {
+            // Primero intentar con notificaciones del sistema
+            const systemNotificationShown = showSystemNotification(activity);
+            
+            // Si las notificaciones del sistema fallan, mostrar notificación en la aplicación
+            if (!systemNotificationShown) {
+                showInAppAlarmNotification(activity);
+            }
+            
+            // Siempre reproducir sonido
+            playAlarmSound();
+            
+            // Mostrar alerta visual si la ventana está activa
+            if (!document.hidden) {
+                showAlarmAlert(activity);
+            }
+        }
+
+        // Inicializar sistema de alarmas
+        function initAlarmSystem() {
+            // Crear contenedor para notificaciones si no existe
+            if (!document.getElementById('alarmNotificationsContainer')) {
+                const container = document.createElement('div');
+                container.id = 'alarmNotificationsContainer';
+                document.body.appendChild(container);
+            }
+            
+            // Configurar opciones de alarma por defecto
+            updateAlarmOptionsUI();
+        }
+
+        // Cargar configuración de alarmas
+        function loadAlarmSettings() {
+            const savedSettings = localStorage.getItem('alarmSettings');
+            if (savedSettings) {
+                try {
+                    const settings = JSON.parse(savedSettings);
+                    defaultAlarmMinutes = settings.defaultAlarmMinutes || 15;
+                    globalAlarmsEnabled = settings.globalAlarmsEnabled !== false;
+                    
+                    updateAlarmOptionsUI();
+                    updateGlobalAlarmToggle();
+                } catch (e) {
+                    console.error('Error cargando configuración de alarmas:', e);
+                }
+            }
+        }
+
+        // Guardar configuración de alarmas
+        function saveAlarmSettings() {
+            const settings = {
+                defaultAlarmMinutes: defaultAlarmMinutes,
+                globalAlarmsEnabled: globalAlarmsEnabled,
+                lastSave: new Date().toISOString()
+            };
+            
+            localStorage.setItem('alarmSettings', JSON.stringify(settings));
+        }
+
+        // Actualizar UI de opciones de alarma
+        function updateAlarmOptionsUI() {
+            const options = document.querySelectorAll('.alarm-option');
+            options.forEach(option => {
+                const minutes = parseInt(option.dataset.minutes);
+                if (minutes === defaultAlarmMinutes) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+            
+            updateAlarmCount();
+        }
+
+        // Actualizar botón global de alarmas
+        function updateGlobalAlarmToggle() {
+            const toggleBtn = document.getElementById('toggleAllAlarms');
+            if (toggleBtn) {
+                if (globalAlarmsEnabled) {
+                    toggleBtn.innerHTML = '<i class="fas fa-bell"></i> <span class="btn-text">Desactivar Todas las Alarmas</span>';
+                    toggleBtn.classList.add('active');
+                } else {
+                    toggleBtn.innerHTML = '<i class="fas fa-bell-slash"></i> <span class="btn-text">Activar Todas las Alarmas</span>';
+                    toggleBtn.classList.remove('active');
+                }
+            }
+        }
+
+        // Actualizar contador de alarmas activas
+        function updateAlarmCount() {
+            const alarmCountElement = document.getElementById('alarmCount');
+            if (alarmCountElement) {
+                const activeAlarms = activities.filter(a => a.alarmMinutes > 0).length;
+                alarmCountElement.textContent = activeAlarms;
+                
+                const alarmStatus = document.getElementById('alarmStatus');
+                if (alarmStatus) {
+                    alarmStatus.style.color = activeAlarms > 0 ? '#f59e0b' : '';
+                    alarmStatus.style.fontWeight = activeAlarms > 0 ? 'bold' : '';
+                }
+            }
+        }
+
+        // Iniciar verificador periódico de alarmas
+        function startAlarmChecker() {
+            // Verificar alarmas cada 30 segundos
+            setInterval(checkAlarms, 30000);
+            
+            // Verificar inmediatamente al cargar
+            setTimeout(checkAlarms, 1000);
+            
+            // Verificar también cuando la página se vuelve visible
+            document.addEventListener('visibilitychange', checkAlarms);
+            
+            // Verificar cuando la ventana obtiene foco
+            window.addEventListener('focus', checkAlarms);
+        }
+
+        // Verificar y disparar alarmas
+        function checkAlarms() {
+            if (!globalAlarmsEnabled) return;
+            
+            const now = new Date();
+            const currentDateStr = now.toDateString();
+            
+            activities.forEach(activity => {
+                if (activity.alarmMinutes > 0 && activity.lastAlarmTriggeredDate !== currentDateStr) {
+                    const eventDate = createDateFromString(activity.date);
+                    
+                    if (activity.time) {
+                        const [hours, minutes] = activity.time.split(':');
+                        eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                    } else {
+                        eventDate.setHours(0, 0, 0, 0);
+                    }
+                    
+                    const alarmTime = new Date(eventDate.getTime() - (activity.alarmMinutes * 60000));
+                    const timeDiff = alarmTime.getTime() - now.getTime();
+                    
+                    // Disparar si estamos dentro de un margen de 30 segundos
+                    if (timeDiff >= 0 && timeDiff < 30000) {
+                        triggerAlarm(activity);
+                    }
+                }
+            });
+        }
+
+        // Disparar una alarma (USANDO NOTIFICACIONES DEL SISTEMA)
+        function triggerAlarm(activity) {
+            const today = new Date().toDateString();
+            const lastTriggered = activity.lastAlarmTriggeredDate;
+            
+            if (lastTriggered === today) {
+                return;
+            }
+            
+            // Marcar como disparada
+            activity.alarmTriggered = true;
+            activity.lastAlarmTriggeredDate = today;
+            saveData();
+            
+            // MOSTRAR NOTIFICACIÓN DEL SISTEMA (aparece sobre cualquier ventana)
+            showPersistentNotification(activity);
+            
+            // Actualizar la vista
+            updateView();
+        }
+
+        // Función para reproducir sonido de alarma
+        function playAlarmSound() {
+            try {
+                const audio = new Audio();
+                audio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==";
+                audio.volume = 0.5;
+                
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Reproducción automática prevenida:", error);
+                        playFallbackBeep();
+                    });
+                }
+            } catch (e) {
+                console.log("Error reproduciendo sonido:", e);
+                playFallbackBeep();
+            }
+        }
+
+        // Función de respaldo para beep
+        function playFallbackBeep() {
+            try {
+                const context = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = context.createOscillator();
+                const gainNode = context.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(context.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, context.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.8);
+                
+                oscillator.start(context.currentTime);
+                oscillator.stop(context.currentTime + 0.8);
+            } catch (e) {
+                console.log("No se pudo reproducir sonido de alarma:", e);
+            }
+        }
+
+        // Mostrar alerta visual de alarma (solo si la ventana está activa)
+        function showAlarmAlert(activity) {
+            // Solo mostrar si la ventana está visible
+            if (document.hidden) return;
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #f59e0b, #d97706);
+                color: white;
+                padding: 20px;
+                border-radius: 12px;
+                z-index: 99999;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                text-align: center;
+                min-width: 300px;
+                animation: alarmPulse 1s infinite;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes alarmPulse {
+                    0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+                    70% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); }
+                    100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            alertDiv.innerHTML = `
+                <div style="font-size: 1.5rem; margin-bottom: 10px;">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div style="font-weight: bold; margin-bottom: 5px;">${activity.title}</div>
+                <div style="font-size: 0.9rem; margin-bottom: 10px;">
+                    Comienza ${getAlarmText(activity.alarmMinutes)}
+                </div>
+                <div style="font-size: 0.8rem; opacity: 0.9;">
+                    ${activity.time ? `Hora: ${activity.time}` : 'Día completo'}
+                </div>
+                <button onclick="this.parentElement.remove()" style="
+                    margin-top: 15px;
+                    background: white;
+                    color: #d97706;
+                    border: none;
+                    padding: 8px 20px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">
+                    OK
+                </button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentElement) {
+                    alertDiv.remove();
+                }
+            }, 10000);
+        }
+
+        // Mostrar notificación de alarma en la aplicación (solo como respaldo)
+        function showInAppAlarmNotification(activity) {
+            const container = document.getElementById('alarmNotificationsContainer');
+            if (!container) return;
+            
+            const notificationId = `alarm-notif-${Date.now()}`;
+            const alarmText = getAlarmText(activity.alarmMinutes);
+            const eventTime = activity.time ? `a las ${activity.time}` : 'hoy';
+            
+            const notification = document.createElement('div');
+            notification.id = notificationId;
+            notification.className = 'notification-alarm';
+            notification.innerHTML = `
+                <div class="notification-alarm-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="notification-alarm-content">
+                    <div class="notification-alarm-title">⏰ ${activity.title}</div>
+                    <div class="notification-alarm-message">
+                        La actividad "${activity.title}" comenzará ${alarmText} (${eventTime}).
+                        ${activity.description ? `<br><small>${activity.description}</small>` : ''}
+                    </div>
+                    <div class="notification-alarm-time">${new Date().toLocaleTimeString()}</div>
+                </div>
+                <button class="notification-alarm-close" onclick="document.getElementById('${notificationId}').remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                const notif = document.getElementById(notificationId);
+                if (notif) notif.remove();
+            }, 30000);
+        }
+
+        // Obtener texto descriptivo de la alarma
+        function getAlarmText(minutes) {
+            if (minutes === 0) return 'ahora';
+            if (minutes < 60) return `en ${minutes} minutos`;
+            if (minutes < 1440) return `en ${Math.floor(minutes / 60)} horas`;
+            return 'mañana';
+        }
+
+        // =============== RESTA DEL CÓDIGO (IGUAL QUE ANTES) ===============
+        
+        // Configurar clics en dashboard
+        function setupDashboardClickEvents() {
+            const pendingElement = document.getElementById('dashPending');
+            if (pendingElement) {
+                pendingElement.style.cursor = 'pointer';
+                pendingElement.title = 'Click para ver en calendario';
+                pendingElement.addEventListener('click', () => {
+                    document.querySelector('[data-view="calendar"]').click();
+                    
+                    const currentMonth = new Date().getMonth();
+                    const currentYear = new Date().getFullYear();
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    document.querySelector('.filter-chip.active').classList.remove('active');
+                    document.querySelector('.filter-chip[data-filter="all"]').classList.add('active');
+                    currentFilter = 'all';
+                    
+                    setTimeout(() => {
+                        highlightPendingDays(currentMonth, currentYear, today);
+                        showNotification('Mostrando actividades pendientes del mes actual', 'info');
+                    }, 100);
+                });
+            }
+        }
+
+        // Resaltar días pendientes en calendario
+        function highlightPendingDays(month, year, today) {
+            const grid = document.getElementById('calendarGrid');
+            if (!grid) return;
+            
+            const dayElements = grid.querySelectorAll('.calendar-day:not(.empty)');
+            
+            dayElements.forEach(dayEl => {
+                const dayNumber = dayEl.querySelector('.day-number').textContent;
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+                
+                const dayDate = createDateFromString(dateStr);
+                dayDate.setHours(0, 0, 0, 0);
+                
+                const isFuture = dayDate >= today;
+                const hasActivities = activities.some(a => {
+                    const activityDate = createDateFromString(a.date);
+                    activityDate.setHours(0, 0, 0, 0);
+                    return activityDate.getTime() === dayDate.getTime();
+                });
+                
+                if (isFuture && hasActivities) {
+                    dayEl.style.boxShadow = '0 0 0 2px #10b981';
+                    dayEl.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                    
+                    const dayNumberEl = dayEl.querySelector('.day-number');
+                    if (dayNumberEl) {
+                        dayNumberEl.style.backgroundColor = '#10b981';
+                        dayNumberEl.style.color = 'white';
+                        dayNumberEl.style.borderRadius = '50%';
+                        dayNumberEl.style.width = '24px';
+                        dayNumberEl.style.height = '24px';
+                        dayNumberEl.style.display = 'flex';
+                        dayNumberEl.style.alignItems = 'center';
+                        dayNumberEl.style.justifyContent = 'center';
+                        dayNumberEl.style.fontWeight = 'bold';
+                    }
+                }
+            });
+            
+            const pendingDays = Array.from(dayElements).filter(dayEl => {
+                const dayNumber = dayEl.querySelector('.day-number').textContent;
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+                const dayDate = createDateFromString(dateStr);
+                dayDate.setHours(0, 0, 0, 0);
+                
+                const isFuture = dayDate >= today;
+                const hasActivities = activities.some(a => {
+                    const activityDate = createDateFromString(a.date);
+                    activityDate.setHours(0, 0, 0, 0);
+                    return activityDate.getTime() === dayDate.getTime();
+                });
+                
+                return isFuture && hasActivities;
+            }).length;
+            
+            const calendarHeader = document.querySelector('.calendar-header');
+            if (calendarHeader && pendingDays > 0) {
+                const infoDiv = document.createElement('div');
+                infoDiv.style.cssText = `
+                    grid-column: 1 / -1;
+                    text-align: center;
+                    padding: 10px;
+                    background: #10b981;
+                    color: white;
+                    margin-top: 5px;
+                    border-radius: 6px;
+                    font-size: 0.9rem;
+                `;
+                infoDiv.innerHTML = `<i class="fas fa-calendar-check"></i> ${pendingDays} días con actividades pendientes este mes`;
+                calendarHeader.parentNode.insertBefore(infoDiv, calendarHeader.nextSibling);
+            }
+        }
+
+        // Inicializar tooltip para Gantt
+        function initGanttTooltip() {
+            if (!document.getElementById('ganttTooltip')) {
+                const tooltip = document.createElement('div');
+                tooltip.id = 'ganttTooltip';
+                tooltip.className = 'gantt-tooltip';
+                document.body.appendChild(tooltip);
+            }
+        }
+
+        // Mostrar tooltip para actividad en Gantt
+        function showGanttTooltip(event, activity) {
+            const tooltip = document.getElementById('ganttTooltip');
+            if (!tooltip || !activity) return;
+            
+            const date = createDateFromString(activity.date);
+            const formattedDate = date.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            const alarmInfo = activity.alarmMinutes > 0 ? 
+                `<div class="gantt-tooltip-row">
+                    <span class="gantt-tooltip-label">Alarma:</span>
+                    <span class="gantt-tooltip-value" style="color: #f59e0b;">
+                        <i class="fas fa-bell"></i> ${getAlarmText(activity.alarmMinutes)}
+                    </span>
+                </div>` : '';
+            
+            tooltip.innerHTML = `
+                <div class="gantt-tooltip-header">
+                    <div class="gantt-tooltip-icon" style="background: ${activity.color}">
+                        ${typeIcons[activity.type] || '📌'}
+                    </div>
+                    <div class="gantt-tooltip-title">${activity.title}</div>
+                </div>
+                <div class="gantt-tooltip-content">
+                    <div class="gantt-tooltip-row">
+                        <span class="gantt-tooltip-label">Tipo:</span>
+                        <span class="gantt-tooltip-value">${typeNames[activity.type] || activity.type}</span>
+                    </div>
+                    <div class="gantt-tooltip-row">
+                        <span class="gantt-tooltip-label">Fecha:</span>
+                        <span class="gantt-tooltip-value">${formattedDate}</span>
+                    </div>
+                    ${activity.time ? `
+                    <div class="gantt-tooltip-row">
+                        <span class="gantt-tooltip-label">Hora:</span>
+                        <span class="gantt-tooltip-value">${activity.time}</span>
+                    </div>
+                    ` : ''}
+                    <div class="gantt-tooltip-row">
+                        <span class="gantt-tooltip-label">Prioridad:</span>
+                        <span class="gantt-tooltip-value">${priorityIcons[activity.priority]} ${priorityNames[activity.priority]}</span>
+                    </div>
+                    ${alarmInfo}
+                    ${activity.description ? `
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);">
+                        <div class="gantt-tooltip-label" style="margin-bottom: 4px;">Descripción:</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light); line-height: 1.3;">${activity.description}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            const x = event.clientX + 10;
+            const y = event.clientY + 10;
+            
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y}px`;
+            tooltip.classList.add('show');
+            
+            setTimeout(() => {
+                const rect = tooltip.getBoundingClientRect();
+                if (rect.right > window.innerWidth) {
+                    tooltip.style.left = `${window.innerWidth - rect.width - 10}px`;
+                }
+                if (rect.bottom > window.innerHeight) {
+                    tooltip.style.top = `${window.innerHeight - rect.height - 10}px`;
+                }
+            }, 0);
+        }
+
+        // Ocultar tooltip
+        function hideGanttTooltip() {
+            const tooltip = document.getElementById('ganttTooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
+        // Cargar datos
+        function loadData() {
+            const saved = localStorage.getItem('schoolData');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    activities = data.activities || [];
+                    
+                    activities.forEach(activity => {
+                        if (activity.alarmMinutes === undefined) {
+                            activity.alarmMinutes = 0;
+                        }
+                        if (activity.alarmTriggered === undefined) {
+                            activity.alarmTriggered = false;
+                        }
+                        if (activity.lastAlarmTriggeredDate === undefined) {
+                            activity.lastAlarmTriggeredDate = '';
+                        }
+                    });
+                    
+                    updateView();
+                    renderDashboard();
+                    updateLastSave();
+                    checkForDuplicates();
+                    updateAlarmCount();
+                } catch (e) {
+                    console.error('Error cargando datos:', e);
+                    showNotification('Error cargando datos', 'error');
+                    activities = [];
+                }
+            } else {
+                activities = [
+                    {
+                        id: '1',
+                        title: 'Jornada de Convivencia Escolar',
+                        type: 'actividad',
+                        date: new Date().toISOString().split('T')[0],
+                        priority: 'high',
+                        color: '#4CAF50',
+                        description: 'Actividad de integración para todos los cursos',
+                        alarmMinutes: 5,
+                        alarmTriggered: false,
+                        lastAlarmTriggeredDate: ''
+                    },
+                    {
+                        id: '2',
+                        title: 'Consejo de Profesores',
+                        type: 'reunion',
+                        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                        priority: 'medium',
+                        color: '#2196F3',
+                        description: 'Reunión mensual del consejo',
+                        alarmMinutes: 15,
+                        alarmTriggered: false,
+                        lastAlarmTriggeredDate: ''
+                    }
+                ];
+                saveData();
+                updateView();
+                renderDashboard();
+                checkForDuplicates();
+                updateAlarmCount();
+            }
+        }
+
+        // Guardar datos
+        function saveData() {
+            try {
+                const dataToSave = {
+                    activities: activities,
+                    lastSave: new Date().toISOString(),
+                    version: '2.6'
+                };
+                
+                localStorage.setItem('schoolData', JSON.stringify(dataToSave));
+                updateLastSave();
+                checkForDuplicates();
+                updateAlarmCount();
+                return true;
+            } catch (e) {
+                console.error('Error guardando datos:', e);
+                showNotification('Error guardando datos', 'error');
+                return false;
+            }
+        }
+
+        // Actualizar última sincronización
+        function updateLastSave() {
+            const lastSave = document.getElementById('lastSave');
+            if (lastSave) {
+                const now = new Date();
+                lastSave.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            }
+        }
+
+        // =============== FUNCIÓN: DETECTAR Y ELIMINAR DUPLICADOS ===============
+        
+        function findDuplicates() {
+            const seen = new Map();
+            const duplicates = [];
+            
+            activities.forEach(activity => {
+                const key = `${activity.title.toLowerCase()}_${activity.date}_${activity.type}`;
+                
+                if (seen.has(key)) {
+                    duplicates.push({
+                        duplicate: activity,
+                        original: seen.get(key),
+                        key: key
+                    });
+                } else {
+                    seen.set(key, activity);
+                }
+            });
+            
+            return duplicates;
+        }
+        
+        function countDuplicates() {
+            const duplicates = findDuplicates();
+            return duplicates.length;
+        }
+        
+        function updateDuplicateCounter() {
+            const count = countDuplicates();
+            const duplicateNumber = document.getElementById('duplicateNumber');
+            const duplicateCount = document.getElementById('duplicateCount');
+            const cleanBtn = document.getElementById('cleanDuplicates');
+            const cleanBtnList = document.getElementById('cleanDuplicatesList');
+            
+            if (duplicateNumber) {
+                duplicateNumber.textContent = count;
+            }
+            
+            if (duplicateCount) {
+                if (count > 0) {
+                    duplicateCount.style.color = '#f59e0b';
+                    duplicateCount.style.fontWeight = 'bold';
+                } else {
+                    duplicateCount.style.color = '';
+                    duplicateCount.style.fontWeight = '';
+                }
+            }
+            
+            if (cleanBtn) {
+                cleanBtn.disabled = count === 0;
+            }
+            
+            if (cleanBtnList) {
+                cleanBtnList.disabled = count === 0;
+            }
+            
+            return count;
+        }
+        
+        function checkForDuplicates() {
+            const count = updateDuplicateCounter();
+            
+            if (count > 0) {
+                console.log(`Se encontraron ${count} actividades duplicadas`);
+                
+                if (count > 3) {
+                    showNotification(`⚠️ Se encontraron ${count} actividades duplicadas`, 'error');
+                }
+            }
+            
+            return count;
+        }
+        
+        function removeDuplicates() {
+            const duplicatesCount = countDuplicates();
+            
+            if (duplicatesCount === 0) {
+                showNotification('No hay actividades duplicadas para eliminar', 'info');
+                return 0;
+            }
+            
+            if (!confirm(`¿Eliminar ${duplicatesCount} actividades duplicadas?\n\nSe conservará la primera aparición de cada actividad.`)) {
+                return 0;
+            }
+            
+            const seen = new Map();
+            const originalCount = activities.length;
+            
+            activities = activities.filter(activity => {
+                const key = `${activity.title.toLowerCase()}_${activity.date}_${activity.type}`;
+                
+                if (seen.has(key)) {
+                    return false;
+                } else {
+                    seen.set(key, activity);
+                    return true;
+                }
+            });
+            
+            const removedCount = originalCount - activities.length;
+            
+            if (removedCount > 0) {
+                saveData();
+                updateView();
+                checkForDuplicates();
+                showNotification(`✅ Se eliminaron ${removedCount} actividades duplicadas`, 'success');
+                
+                setTimeout(() => {
+                    alert(`Limpieza completada:\n\n• Actividades antes: ${originalCount}\n• Actividades después: ${activities.length}\n• Duplicados eliminados: ${removedCount}`);
+                }, 500);
+            } else {
+                showNotification('No se encontraron duplicados para eliminar', 'info');
+            }
+            
+            return removedCount;
+        }
+
+        // =============== FUNCIÓN PARA CARTA GANTT CON SCROLL HORIZONTAL ===============
+        function renderGantt() {
+            const container = document.getElementById('ganttContent');
+            const headerDays = document.querySelector('.timeline-days');
+            
+            if(!container || !headerDays) return;
+            
+            container.innerHTML = '';
+            headerDays.innerHTML = '';
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
+            
+            for(let i = 1; i <= daysInMonth; i++) {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'gantt-day-header';
+                dayHeader.textContent = i;
+                
+                if (isCurrentMonth && i === today.getDate()) {
+                    dayHeader.classList.add('current-day');
+                }
+                
+                headerDays.appendChild(dayHeader);
+            }
+            
+            const monthActs = activities.filter(a => {
+                const date = createDateFromString(a.date);
+                return date.getMonth() === month && 
+                       date.getFullYear() === year && 
+                       (currentFilter === 'all' || a.type === currentFilter);
+            });
+            
+            monthActs.forEach(act => {
+                const day = getDayFromDateString(act.date);
+                
+                if (day < 1 || day > daysInMonth) {
+                    console.warn(`Día fuera de rango: ${day} para actividad "${act.title}"`);
+                    return;
+                }
+                
+                let duration = 1;
+                
+                if (act.endDate) {
+                    const endDate = createDateFromString(act.endDate);
+                    const startDate = createDateFromString(act.date);
+                    
+                    const start = new Date(startDate);
+                    start.setHours(0, 0, 0, 0);
+                    const end = new Date(endDate);
+                    end.setHours(0, 0, 0, 0);
+                    duration = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                }
+                
+                const colWidth = 40;
+                const left = (day - 1) * colWidth;
+                const width = duration * colWidth - 2;
+                
+                const icon = typeIcons[act.type] || '📌';
+                const alarmClass = act.alarmMinutes > 0 ? 'alarm-active' : '';
+                
+                const row = document.createElement('div');
+                row.className = 'gantt-row';
+                row.innerHTML = `
+                    <div class="gantt-task-name">
+                        <div style="width:10px; height:10px; border-radius:50%; background:${act.color}"></div>
+                        ${act.title}
+                        ${act.alarmMinutes > 0 ? '<span class="alarm-indicator" style="margin-left: 5px;" title="Tiene alarma configurada"><i class="fas fa-bell"></i></span>' : ''}
+                    </div>
+                    <div class="gantt-task-bar-area" style="position: relative;">
+                        <div class="gantt-bar ${alarmClass}" style="left: ${left}px; width: ${width}px; background: ${act.color}" data-id="${act.id}">
+                            <span class="gantt-bar-icon">${icon}</span>
+                        </div>
+                    </div>
+                `;
+                
+                const ganttBar = row.querySelector('.gantt-bar');
+                ganttBar.addEventListener('mouseenter', (e) => {
+                    showGanttTooltip(e, act);
+                });
+                
+                ganttBar.addEventListener('mousemove', (e) => {
+                    const tooltip = document.getElementById('ganttTooltip');
+                    if (tooltip && tooltip.classList.contains('show')) {
+                        tooltip.style.left = `${e.clientX + 10}px`;
+                        tooltip.style.top = `${e.clientY + 10}px`;
+                    }
+                });
+                
+                ganttBar.addEventListener('mouseleave', () => {
+                    hideGanttTooltip();
+                });
+                
+                ganttBar.addEventListener('click', () => {
+                    openModal(act.id);
+                });
+                
+                container.appendChild(row);
+            });
+            
+            if (isCurrentMonth && today.getDate() <= daysInMonth) {
+                const taskBarAreas = document.querySelectorAll('.gantt-task-bar-area');
+                taskBarAreas.forEach(area => {
+                    const marker = document.createElement('div');
+                    marker.className = 'gantt-current-day-marker';
+                    marker.style.left = `${(today.getDate() - 1) * 40}px`;
+                    area.appendChild(marker);
+                });
+            }
+            
+            // Auto-scroll al día actual si estamos en el mes actual
+            if (isCurrentMonth) {
+                setTimeout(() => {
+                    const scrollContainer = document.getElementById('ganttScrollContainer');
+                    if (scrollContainer) {
+                        const dayWidth = 40;
+                        const todayPosition = (today.getDate() - 5) * dayWidth; // Dejar 5 días de margen
+                        scrollContainer.scrollLeft = Math.max(0, todayPosition);
+                    }
+                }, 100);
+            }
+        }
+
+        // =============== NUEVAS FUNCIONES PARA SINCRONIZACIÓN ===============
+        
+        function exportSyncFile() {
+            const dataToSave = {
+                activities: activities,
+                lastSave: new Date().toISOString(),
+                version: '2.6',
+                exportDate: new Date().toISOString(),
+                totalActivities: activities.length,
+                syncType: 'convivencia_escolar'
+            };
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToSave, null, 2));
+            const anchor = document.createElement('a');
+            anchor.setAttribute("href", dataStr);
+            anchor.setAttribute("download", SYNC_FILENAME);
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            
+            showNotification(`Archivo de sincronización exportado: ${SYNC_FILENAME}`, 'success');
+            return true;
+        }
+
+        function importSyncFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const newActivities = data.activities || [];
+                    
+                    if (newActivities.length === 0) {
+                        showNotification('El archivo no contiene actividades', 'error');
+                        return;
+                    }
+                    
+                    if (!data.syncType || data.syncType !== 'convivencia_escolar') {
+                        if (!confirm('Este archivo no parece ser un archivo de sincronización de Convivencia Escolar. ¿Deseas intentar importarlo de todos modos?')) {
+                            return;
+                        }
+                    }
+                    
+                    showSyncImportDialog(newActivities, data);
+                } catch (error) {
+                    console.error('Error importando:', error);
+                    showNotification('Error al importar el archivo', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function showSyncImportDialog(newActivities, importedData) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay active';
+            modal.innerHTML = `
+                <div class="modal-container" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h2>🔄 Sincronizar Datos entre Equipos</h2>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
+                    </div>
+                    <div class="modal-form" style="padding: 2rem;">
+                        <p><strong>Archivo:</strong> ${SYNC_FILENAME}</p>
+                        <p><strong>Actividades en archivo:</strong> ${newActivities.length}</p>
+                        <p><strong>Actividades actuales:</strong> ${activities.length}</p>
+                        <p><strong>Última modificación:</strong> ${new Date(importedData.lastSave).toLocaleString()}</p>
+                        
+                        <div style="margin: 2rem 0; padding: 1rem; background: #f0f7ff; border-radius: 8px;">
+                            <h3 style="margin-bottom: 1rem;">Selecciona una opción de sincronización:</h3>
+                            
+                            <div class="sync-options">
+                                <label style="display: block; margin-bottom: 1rem; padding: 1rem; border: 2px solid #4CAF50; border-radius: 8px; cursor: pointer;">
+                                    <input type="radio" name="syncOption" value="merge" checked style="margin-right: 10px;">
+                                    <strong>1. Fusionar</strong> - Mantener todas las actividades (${activities.length + newActivities.length} total)
+                                    <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Se añadirán las actividades del archivo a las existentes</div>
+                                </label>
+                                
+                                <label style="display: block; margin-bottom: 1rem; padding: 1rem; border: 2px solid #2196F3; border-radius: 8px; cursor: pointer;">
+                                    <input type="radio" name="syncOption" value="replace" style="margin-right: 10px;">
+                                    <strong>2. Reemplazar</strong> - Usar solo las actividades del archivo (${newActivities.length} actividades)
+                                    <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Se borrarán todas las actividades actuales</div>
+                                </label>
+                                
+                                <label style="display: block; padding: 1rem; border: 2px solid #9C27B0; border-radius: 8px; cursor: pointer;">
+                                    <input type="radio" name="syncOption" value="smart" style="margin-right: 10px;">
+                                    <strong>3. Solo nuevas</strong> - Agregar solo actividades que no existan
+                                    <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Evita duplicados basándose en título, fecha y tipo</div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+                            <button type="button" class="btn-primary" id="confirmSync">Continuar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            modal.querySelector('#confirmSync').addEventListener('click', function() {
+                const option = modal.querySelector('input[name="syncOption"]:checked').value;
+                performSyncImport(newActivities, option, importedData);
+                modal.remove();
+            });
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function performSyncImport(newActivities, option, importedData) {
+            let message = '';
+            let oldCount = activities.length;
+            
+            switch(option) {
+                case 'merge':
+                    activities = [...activities, ...newActivities];
+                    message = `Fusión completada: ${oldCount} + ${newActivities.length} = ${activities.length} actividades`;
+                    break;
+                    
+                case 'replace':
+                    activities = newActivities;
+                    message = `Reemplazo completado: ${activities.length} actividades cargadas`;
+                    break;
+                    
+                case 'smart':
+                    const existingKeys = new Set();
+                    activities.forEach(act => {
+                        const key = `${act.title.toLowerCase()}_${act.date}_${act.type}`;
+                        existingKeys.add(key);
+                    });
+                    
+                    const uniqueNewActivities = newActivities.filter(act => {
+                        const key = `${act.title.toLowerCase()}_${act.date}_${act.type}`;
+                        return !existingKeys.has(key);
+                    });
+                    
+                    activities = [...activities, ...uniqueNewActivities];
+                    message = `Importación inteligente: ${uniqueNewActivities.length} nuevas actividades agregadas (${newActivities.length - uniqueNewActivities.length} duplicados omitidos)`;
+                    break;
+            }
+            
+            saveData();
+            updateView();
+            
+            showNotification(message, 'success');
+            
+            setTimeout(() => {
+                alert(`✅ Sincronización completada
+        
+Resumen:
+• Actividades antes: ${oldCount}
+• Actividades después: ${activities.length}
+• Diferencia: ${activities.length - oldCount}
+
+${option === 'smart' ? 'Se omitieron actividades duplicadas automáticamente' : ''}
+
+Los datos ahora están disponibles en este equipo.`);
+            }, 500);
+        }
+
+        // =============== FUNCIONES EXISTENTES ===============
+        
+        function updateCurrentDate() {
+            const now = new Date();
+            const elDate = document.getElementById('currentDate');
+            if (elDate) {
+                elDate.textContent = now.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+        }
+
+        function renderDashboard() {
+            const total = activities.length;
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const pending = activities.filter(a => {
+                const date = createDateFromString(a.date);
+                date.setHours(0, 0, 0, 0);
+                
+                const isCurrentMonthYear = date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+                const isFuture = date >= today;
+                
+                return isCurrentMonthYear && isFuture;
+            }).length;
+            
+            const highPrio = activities.filter(a => a.priority === 'high').length;
+
+            document.getElementById('dashTotalActivities').textContent = total;
+            document.getElementById('dashPending').textContent = pending;
+            document.getElementById('dashHighPriority').textContent = highPrio;
+
+            const types = ['actividad', 'reunion', 'efemeride', 'recordatorio'];
+            const labels = { actividad: 'Actividades', reunion: 'Reuniones', efemeride: 'Efemérides', recordatorio: 'Recordatorios' };
+            const colors = { actividad: '#4CAF50', reunion: '#2196F3', efemeride: '#FF9800', recordatorio: '#9C27B0' };
+            
+            const chartContainer = document.getElementById('typeDistribution');
+            if(chartContainer) {
+                chartContainer.innerHTML = '';
+                types.forEach(type => {
+                    const count = activities.filter(a => a.type === type).length;
+                    const percentage = total > 0 ? (count / total) * 100 : 0;
+                    const row = document.createElement('div');
+                    row.className = 'chart-bar-row';
+                    row.innerHTML = `<div style="width: 80px; font-size: 0.8rem;">${labels[type]}</div><div class="chart-bar-bg"><div class="chart-bar-fill" style="width: ${percentage}%; background: ${colors[type]}"></div></div><div style="width: 30px; text-align: right; font-size: 0.8rem;">${count}</div>`;
+                    chartContainer.appendChild(row);
+                });
+            }
+
+            const upcomingContainer = document.getElementById('upcomingList');
+            if(upcomingContainer) {
+                upcomingContainer.innerHTML = '';
+                
+                const nextEvents = activities
+                    .filter(a => {
+                        const date = createDateFromString(a.date);
+                        date.setHours(0, 0, 0, 0);
+                        return date >= today;
+                    })
+                    .sort((a,b) => createDateFromString(a.date) - createDateFromString(b.date))
+                    .slice(0, 5);
+
+                if (nextEvents.length === 0) {
+                    upcomingContainer.innerHTML = '<div style="color: #999; text-align: center; padding: 10px;">No hay eventos próximos</div>';
+                } else {
+                    nextEvents.forEach(act => {
+                        const date = createDateFromString(act.date);
+                        const item = document.createElement('div');
+                        item.className = 'upcoming-item';
+                        item.style.borderLeftColor = act.color;
+                        
+                        const alarmIndicator = act.alarmMinutes > 0 ? 
+                            '<span class="alarm-indicator" title="Tiene alarma configurada"><i class="fas fa-bell"></i></span>' : '';
+                        
+                        item.innerHTML = `
+                            <div class="upcoming-date">
+                                <div>${date.getDate()}</div>
+                                <div style="font-size: 0.7rem; font-weight: 400;">${monthNames[date.getMonth()].substring(0,3)}</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 0.9rem; display: flex; align-items: center;">
+                                    ${act.title} ${alarmIndicator}
+                                </div>
+                                <div style="font-size: 0.8rem; color: #666;">${act.time || 'Todo el día'}</div>
+                            </div>
+                        `;
+                        upcomingContainer.appendChild(item);
+                    });
+                }
+            }
+            
+            updateDuplicateCounter();
+        }
+
+        function updateView() {
+            const now = currentDate;
+            const elDate = document.getElementById('currentDate');
+            const elMonth = document.getElementById('currentMonth');
+            
+            if(elDate) elDate.textContent = now.toLocaleDateString('es-ES', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
+            if(elMonth) elMonth.textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+            if (currentView === 'calendar') renderCalendar();
+            else if (currentView === 'list') renderList();
+            else if (currentView === 'gantt') renderGantt();
+            else if (currentView === 'dashboard') renderDashboard();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            if(!grid) return;
+            
+            grid.innerHTML = '';
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+            
+            for(let i = 0; i < firstDay; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day empty';
+                grid.appendChild(empty);
+            }
+            
+            for(let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                
+                if (dateStr === todayStr) {
+                    dayEl.classList.add('today');
+                    dayEl.classList.add('current-day');
+                }
+                
+                dayEl.innerHTML = `<div class="day-number">${day}</div>`;
+                
+                const dayEvents = activities.filter(a => {
+                    if (currentFilter !== 'all' && a.type !== currentFilter) return false;
+                    return compareDates(a.date, dateStr);
+                });
+                
+                const eventsContainer = document.createElement('div');
+                eventsContainer.className = 'day-events';
+                
+                dayEvents.slice(0, 4).forEach(ev => {
+                    const evEl = document.createElement('div');
+                    evEl.className = 'cal-event';
+                    evEl.textContent = ev.title;
+                    evEl.style.backgroundColor = ev.color;
+                    
+                    if (ev.alarmMinutes > 0) {
+                        evEl.classList.add('alarm-active');
+                        evEl.title = 'Este evento tiene alarma configurada';
+                    }
+                    
+                    evEl.onclick = (e) => {
+                        e.stopPropagation();
+                        openModal(ev.id);
+                    };
+                    eventsContainer.appendChild(evEl);
+                });
+                
+                if (dayEvents.length > 4) {
+                    const more = document.createElement('div');
+                    more.style.fontSize = '0.7rem';
+                    more.style.color = '#666';
+                    more.style.textAlign = 'center';
+                    more.textContent = `+${dayEvents.length - 4} más`;
+                    eventsContainer.appendChild(more);
+                }
+                
+                dayEl.appendChild(eventsContainer);
+                dayEl.onclick = () => openModal(null, dateStr);
+                grid.appendChild(dayEl);
+            }
+        }
+
+        function renderList() {
+            const list = document.getElementById('activitiesList');
+            if(!list) return;
+            
+            list.innerHTML = '';
+            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            const sortType = document.getElementById('sortSelect')?.value || 'date';
+
+            let filtered = activities.filter(a => {
+                if (currentFilter !== 'all' && a.type !== currentFilter) return false;
+                return a.title.toLowerCase().includes(searchTerm) || (a.description || '').toLowerCase().includes(searchTerm);
+            });
+
+            filtered.sort((a, b) => {
+                if (sortType === 'date') return createDateFromString(a.date) - createDateFromString(b.date);
+                if (sortType === 'priority') {
+                    const priorityMap = { high: 3, medium: 2, low: 1 };
+                    return priorityMap[b.priority] - priorityMap[a.priority];
+                }
+                return a.type.localeCompare(b.type);
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:2rem; color:#888;">No se encontraron actividades.</div>';
+                return;
+            }
+
+            const duplicates = findDuplicates();
+            const duplicateIds = duplicates.map(d => d.duplicate.id);
+            
+            filtered.forEach(act => {
+                const isDuplicate = duplicateIds.includes(act.id);
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.style.borderLeftColor = act.color;
+                
+                if (isDuplicate) {
+                    item.style.opacity = '0.7';
+                    item.style.background = 'linear-gradient(90deg, var(--bg-card), rgba(245, 158, 11, 0.1))';
+                }
+                
+                const isChecked = selectedIds.has(act.id) ? 'checked' : '';
+                
+                const activityDate = createDateFromString(act.date);
+                activityDate.setHours(0, 0, 0, 0);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                let statusBadge = '';
+                
+                if (activityDate < today) {
+                    statusBadge = '<span style="color: #888; font-size: 0.7rem;">(PASADA)</span>';
+                } else if (activityDate.getTime() === today.getTime()) {
+                    statusBadge = '<span style="color: var(--primary); font-size: 0.7rem;">(HOY)</span>';
+                } else {
+                    statusBadge = '<span style="color: #10b981; font-size: 0.7rem;">(PENDIENTE)</span>';
+                }
+                
+                const alarmBadge = act.alarmMinutes > 0 ? 
+                    `<span class="alarm-badge" title="Alarma: ${getAlarmText(act.alarmMinutes)}">
+                        <i class="fas fa-bell"></i> ${getAlarmText(act.alarmMinutes)}
+                    </span>` : '';
+                
+                item.innerHTML = `
+                    <div class="list-checkbox-container">
+                        <input type="checkbox" class="custom-checkbox" data-id="${act.id}" ${isChecked}>
+                        ${isDuplicate ? '<span title="Actividad duplicada" style="color: #f59e0b; font-size: 0.8rem;">⚠️</span>' : ''}
+                        ${act.alarmMinutes > 0 ? '<span class="alarm-indicator" title="Tiene alarma configurada"><i class="fas fa-bell"></i></span>' : ''}
+                    </div>
+                    <div class="list-info">
+                        <h4>${act.title} ${isDuplicate ? '<span style="color: #f59e0b; font-size: 0.8rem;">(DUPLICADO)</span>' : ''} ${statusBadge} ${alarmBadge}</h4>
+                        <div class="list-meta">
+                            <span><i class="fas fa-calendar"></i> ${formatDateFriendly(act.date)}</span>
+                            ${act.time ? `<span><i class="fas fa-clock"></i> ${act.time}</span>` : ''}
+                            <span style="color: ${act.color}">${typeIcons[act.type] || '📌'} ${typeNames[act.type] || act.type}</span>
+                        </div>
+                    </div>
+                    <button class="btn-text" onclick="openModal('${act.id}')"><i class="fas fa-edit"></i></button>
+                `;
+                
+                list.appendChild(item);
+            });
+
+            document.querySelectorAll('.custom-checkbox').forEach(box => {
+                box.addEventListener('change', (e) => {
+                    const id = e.target.dataset.id;
+                    if (e.target.checked) selectedIds.add(id);
+                    else selectedIds.delete(id);
+                    updateEmailButton();
+                });
+            });
+        }
+
+        // Modal
+        function openModal(id = null, prefillDate = null) {
+            editingId = id;
+            const modal = document.getElementById('activityModal');
+            const delBtn = document.getElementById('deleteActivity');
+            const dupBtn = document.getElementById('duplicateActivity');
+            const alarmToggleBtn = document.getElementById('toggleAlarm');
+            const alarmSelect = document.getElementById('alarmTime');
+            
+            if (id) {
+                const act = activities.find(a => a.id === id);
+                if (!act) return;
+                
+                document.getElementById('modalTitle').textContent = 'Editar Actividad';
+                document.getElementById('activityId').value = act.id;
+                document.getElementById('activityTitle').value = act.title;
+                document.getElementById('activityDate').value = act.date;
+                document.getElementById('activityEndDate').value = act.endDate || '';
+                document.getElementById('activityTime').value = act.time || '';
+                document.getElementById('activityDescription').value = act.description || '';
+                document.getElementById('activityColor').value = act.color;
+                document.getElementById('activityPriority').value = act.priority;
+                
+                const hasAlarm = act.alarmMinutes > 0;
+                if (hasAlarm) {
+                    alarmToggleBtn.innerHTML = '<i class="fas fa-bell"></i> <span>Alarma activada</span>';
+                    alarmToggleBtn.classList.add('active');
+                    alarmSelect.disabled = false;
+                    alarmSelect.value = act.alarmMinutes;
+                } else {
+                    alarmToggleBtn.innerHTML = '<i class="fas fa-bell-slash"></i> <span>Alarma desactivada</span>';
+                    alarmToggleBtn.classList.remove('active');
+                    alarmSelect.disabled = true;
+                    alarmSelect.value = defaultAlarmMinutes;
+                }
+                
+                const radios = document.getElementsByName('activityType');
+                radios.forEach(r => {
+                    if(r.value === act.type) r.checked = true;
+                });
+                
+                delBtn.style.display = 'block';
+                dupBtn.style.display = 'block';
+            } else {
+                document.getElementById('modalTitle').textContent = 'Nueva Actividad';
+                document.getElementById('activityForm').reset();
+                document.getElementById('activityId').value = '';
+                document.getElementById('activityColor').value = '#4CAF50';
+                document.getElementById('activityPriority').value = 'medium';
+                
+                alarmToggleBtn.innerHTML = '<i class="fas fa-bell-slash"></i> <span>Alarma desactivada</span>';
+                alarmToggleBtn.classList.remove('active');
+                alarmSelect.disabled = true;
+                alarmSelect.value = defaultAlarmMinutes;
+                
+                if (prefillDate) {
+                    document.getElementById('activityDate').value = prefillDate;
+                } else {
+                    document.getElementById('activityDate').value = new Date().toISOString().split('T')[0];
+                }
+                
+                document.querySelector('input[name="activityType"][value="actividad"]').checked = true;
+                delBtn.style.display = 'none';
+                dupBtn.style.display = 'none';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('activityModal').classList.remove('active');
+            editingId = null;
+        }
+
+        // Formulario
+        document.getElementById('activityForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const alarmToggleBtn = document.getElementById('toggleAlarm');
+            const alarmSelect = document.getElementById('alarmTime');
+            const hasAlarm = alarmToggleBtn.classList.contains('active');
+            const alarmMinutes = hasAlarm ? parseInt(alarmSelect.value) : 0;
+            
+            const formData = {
+                id: document.getElementById('activityId').value || Date.now().toString(),
+                title: document.getElementById('activityTitle').value,
+                type: document.querySelector('input[name="activityType"]:checked').value,
+                date: document.getElementById('activityDate').value,
+                endDate: document.getElementById('activityEndDate').value || '',
+                time: document.getElementById('activityTime').value || '',
+                priority: document.getElementById('activityPriority').value,
+                description: document.getElementById('activityDescription').value,
+                color: document.getElementById('activityColor').value,
+                alarmMinutes: alarmMinutes,
+                alarmTriggered: false,
+                lastAlarmTriggeredDate: ''
+            };
+            
+            if (editingId) {
+                const index = activities.findIndex(a => a.id === editingId);
+                if (index !== -1) {
+                    activities[index] = formData;
+                }
+            } else {
+                activities.push(formData);
+            }
+            
+            saveData();
+            closeModal();
+            updateView();
+            showNotification('Actividad guardada', 'success');
+        });
+
+        // Botones del modal
+        document.getElementById('deleteActivity').addEventListener('click', () => {
+            if(confirm('¿Seguro que deseas eliminar esta actividad?')) {
+                activities = activities.filter(a => a.id !== editingId);
+                selectedIds.delete(editingId);
+                saveData();
+                closeModal();
+                updateView();
+                updateEmailButton();
+                showNotification('Actividad eliminada', 'success');
+            }
+        });
+
+        document.getElementById('duplicateActivity').addEventListener('click', () => {
+            const act = activities.find(a => a.id === editingId);
+            if(act) {
+                const newAct = {...act, id: Date.now().toString(), title: act.title + ' (Copia)'};
+                activities.push(newAct);
+                saveData();
+                closeModal();
+                updateView();
+                showNotification('Actividad clonada', 'success');
+            }
+        });
+
+        // Botón de email
+        function updateEmailButton() {
+            const count = selectedIds.size;
+            const btn = document.getElementById('btnEmail');
+            const counterSpan = document.getElementById('selectedCount');
+            
+            if(counterSpan) counterSpan.textContent = count;
+            if(btn) btn.disabled = count === 0;
+        }
+
+        document.getElementById('btnEmail').addEventListener('click', () => {
+            if (selectedIds.size === 0) return;
+            
+            const selectedActs = activities
+                .filter(a => selectedIds.has(a.id))
+                .sort((a, b) => createDateFromString(a.date) - createDateFromString(b.date));
+            
+            const recipient = "c.cari@nsmquilpue.cl";
+            const subject = encodeURIComponent(`📋 Resumen Convivencia Escolar - ${new Date().toLocaleDateString()}`);
+            
+            let body = "ESTIMADOS,\n\nAdjunto el resumen de las actividades:\n\n====================================\n";
+            
+            selectedActs.forEach(act => {
+                const date = formatDateFriendly(act.date);
+                const typeIcon = typeIcons[act.type] || '📌';
+                
+                const priorityIcon = act.priority === 'high' ? '🔴 ALTA' : 
+                                   act.priority === 'medium' ? '🟡 MEDIA' : '🟢 BAJA';
+                
+                const alarmInfo = act.alarmMinutes > 0 ? `⏰ Alarma: ${getAlarmText(act.alarmMinutes)} antes\n` : '';
+                
+                body += `${typeIcon} ${act.title.toUpperCase()}\n`;
+                body += `📅 ${date} ${act.time ? '| 🕒 ' + act.time : ''}\n`;
+                body += alarmInfo;
+                body += `⚡ Prioridad: ${priorityIcon}\n`;
+                
+                if (act.description) {
+                    body += `📝 Detalle: ${act.description}\n`;
+                }
+                
+                body += "------------------------------------\n";
+            });
+            
+            body += `\nTotal: ${selectedActs.length}\nGenerado por Sistema de Gestión de Convivencia Escolar.`;
+            
+            window.open(`mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(body)}`);
+        });
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Navegación
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    currentView = btn.dataset.view;
+                    document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+                    document.getElementById(currentView + 'View').classList.add('active');
+                    
+                    updateView();
+                    
+                    if(window.innerWidth <= 900) {
+                        document.getElementById('sidebar').classList.remove('open');
+                    }
+                });
+            });
+
+            // Sidebar
+            document.getElementById('toggleSidebar').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                if(window.innerWidth > 900) {
+                    sidebar.classList.toggle('collapsed');
+                } else {
+                    sidebar.classList.toggle('open');
+                }
+            });
+
+            // Filtros
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentFilter = chip.dataset.filter;
+                    updateView();
+                });
+            });
+
+            // Navegación de meses
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateView();
+                if (currentView === 'gantt') {
+                    setTimeout(() => {
+                        const ganttContent = document.getElementById('ganttContent');
+                        if (ganttContent) {
+                            const oldMarkers = ganttContent.querySelectorAll('.gantt-current-day-marker');
+                            oldMarkers.forEach(marker => marker.remove());
+                            renderGantt();
+                        }
+                    }, 50);
+                }
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateView();
+                if (currentView === 'gantt') {
+                    setTimeout(() => {
+                        const ganttContent = document.getElementById('ganttContent');
+                        if (ganttContent) {
+                            const oldMarkers = ganttContent.querySelectorAll('.gantt-current-day-marker');
+                            oldMarkers.forEach(marker => marker.remove());
+                            renderGantt();
+                        }
+                    }, 50);
+                }
+            });
+
+            document.getElementById('today').addEventListener('click', () => {
+                currentDate = new Date();
+                updateView();
+                if (currentView === 'gantt') {
+                    setTimeout(() => {
+                        const ganttContent = document.getElementById('ganttContent');
+                        if (ganttContent) {
+                            const oldMarkers = ganttContent.querySelectorAll('.gantt-current-day-marker');
+                            oldMarkers.forEach(marker => marker.remove());
+                            renderGantt();
+                        }
+                    }, 50);
+                }
+            });
+
+            // Botón nueva actividad
+            document.getElementById('addActivity').addEventListener('click', () => openModal());
+
+            // Cerrar modal
+            document.querySelectorAll('.modal-close').forEach(b => {
+                b.addEventListener('click', closeModal);
+            });
+
+            // Tema
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                const html = document.documentElement;
+                const isDark = html.getAttribute('data-theme') === 'dark';
+                html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+                document.querySelector('#themeToggle i').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+            });
+
+            // Búsqueda
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    if (currentView === 'list') renderList();
+                });
+            }
+
+            // Ordenamiento
+            const sortSelect = document.getElementById('sortSelect');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', () => {
+                    if (currentView === 'list') renderList();
+                });
+            }
+
+            // Botón para limpiar duplicados
+            document.getElementById('cleanDuplicates').addEventListener('click', () => {
+                removeDuplicates();
+            });
+
+            document.getElementById('cleanDuplicatesList').addEventListener('click', () => {
+                removeDuplicates();
+            });
+
+            // Guardar manual
+            document.getElementById('backupData').addEventListener('click', () => {
+                saveData();
+                showNotification('Datos guardados', 'success');
+            });
+
+            // Exportar
+            document.getElementById('exportData').addEventListener('click', () => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+                    activities: activities,
+                    version: '2.6',
+                    lastSave: new Date().toISOString()
+                }));
+                
+                const anchor = document.createElement('a');
+                anchor.setAttribute("href", dataStr);
+                anchor.setAttribute("download", "convivencia_escolar.json");
+                document.body.appendChild(anchor);
+                anchor.click();
+                anchor.remove();
+                
+                showNotification('Datos exportados', 'success');
+            });
+
+            // Importar
+            document.getElementById('importDataBtn').addEventListener('click', () => {
+                document.getElementById('fileImport').click();
+            });
+
+            document.getElementById('fileImport').addEventListener('change', handleFileImport);
+
+            // Exportar sincronización
+            document.getElementById('exportSync').addEventListener('click', exportSyncFile);
+            
+            // Importar sincronización
+            document.getElementById('importSyncBtn').addEventListener('click', () => {
+                document.getElementById('syncFileImport').click();
+            });
+            
+            document.getElementById('syncFileImport').addEventListener('change', importSyncFile);
+
+            // Imprimir
+            document.getElementById('generateReport').addEventListener('click', () => {
+                if(currentView !== 'list') {
+                    document.querySelector('[data-view="list"]').click();
+                }
+                setTimeout(() => window.print(), 500);
+            });
+
+            // Ocultar tooltip
+            document.addEventListener('click', hideGanttTooltip);
+            document.addEventListener('mouseleave', hideGanttTooltip);
+
+            // =============== EVENT LISTENERS PARA ALARMAS ===============
+            
+            // Toggle de alarma en el modal
+            document.getElementById('toggleAlarm').addEventListener('click', () => {
+                const btn = document.getElementById('toggleAlarm');
+                const select = document.getElementById('alarmTime');
+                
+                if (btn.classList.contains('active')) {
+                    btn.innerHTML = '<i class="fas fa-bell-slash"></i> <span>Alarma desactivada</span>';
+                    btn.classList.remove('active');
+                    select.disabled = true;
+                } else {
+                    btn.innerHTML = '<i class="fas fa-bell"></i> <span>Alarma activada</span>';
+                    btn.classList.add('active');
+                    select.disabled = false;
+                }
+            });
+
+            // Opciones de alarma en sidebar
+            document.querySelectorAll('.alarm-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const minutes = parseInt(option.dataset.minutes);
+                    defaultAlarmMinutes = minutes;
+                    updateAlarmOptionsUI();
+                    saveAlarmSettings();
+                    showNotification(`Alarma por defecto configurada a ${getAlarmText(minutes)}`, 'success');
+                });
+            });
+
+            // Toggle global de alarmas
+            document.getElementById('toggleAllAlarms').addEventListener('click', () => {
+                globalAlarmsEnabled = !globalAlarmsEnabled;
+                updateGlobalAlarmToggle();
+                saveAlarmSettings();
+                
+                if (globalAlarmsEnabled) {
+                    showNotification('Todas las alarmas han sido activadas', 'success');
+                    checkAlarms();
+                } else {
+                    showNotification('Todas las alarmas han sido desactivadas', 'info');
+                }
+            });
+
+            // Botón para probar sonido de alarma
+            document.getElementById('testAlarmSound').addEventListener('click', function() {
+                playAlarmSound();
+                showNotification('Sonido de alarma probado', 'success');
+            });
+        }
+
+        // Importar archivo
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const newActivities = Array.isArray(data) ? data : (data.activities || []);
+                    
+                    if (newActivities.length === 0) {
+                        showNotification('El archivo no contiene actividades', 'error');
+                        return;
+                    }
+                    
+                    if (confirm(`¿Importar ${newActivities.length} actividades? (Se añadirán a las existentes)`)) {
+                        newActivities.forEach(act => {
+                            act.id = Date.now().toString() + Math.random().toString().substr(2, 5);
+                            if (act.alarmMinutes === undefined) {
+                                act.alarmMinutes = defaultAlarmMinutes;
+                            }
+                            if (act.alarmTriggered === undefined) {
+                                act.alarmTriggered = false;
+                            }
+                            if (act.lastAlarmTriggeredDate === undefined) {
+                                act.lastAlarmTriggeredDate = '';
+                            }
+                        });
+                        
+                        activities = [...activities, ...newActivities];
+                        saveData();
+                        updateView();
+                        updateAlarmCount();
+                        showNotification(`${newActivities.length} actividades importadas`, 'success');
+                    }
+                } catch (error) {
+                    console.error('Error importando:', error);
+                    showNotification('Error al importar el archivo', 'error');
+                }
+            };
+            
+            if (file.name.endsWith('.json')) {
+                reader.readAsText(file);
+            } else {
+                showNotification('Solo se admiten archivos JSON', 'error');
+            }
+            
+            event.target.value = '';
+        }
+
+        function showNotification(msg, type = 'info') {
+            const notif = document.getElementById('notification');
+            if (!notif) return;
+            
+            document.getElementById('notificationText').textContent = msg;
+            notif.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>
